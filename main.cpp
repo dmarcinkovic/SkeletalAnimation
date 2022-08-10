@@ -1,7 +1,16 @@
-#include <iostream>
+#include "Window.h"
 
 int main()
 {
-	std::cout << "Hello, World!" << std::endl;
+	Animation::Window window("Skeletal Animation", 1200, 800);
+
+	while (window.isRunning())
+	{
+		Animation::Window::clearWindow();
+
+
+		window.update();
+	}
+
 	return 0;
 }
