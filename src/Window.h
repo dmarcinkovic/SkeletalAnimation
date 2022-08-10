@@ -6,15 +6,19 @@
 
 namespace Animation
 {
-	class Window
+	class Window final
 	{
 	private:
 		GLFWwindow *m_Window{};
 
 	public:
-		Window(const char *title, int width, int height);
+		static Window &create(const char *title, int width, int height);
 
 		~Window();
+
+		Window(const Window &) = delete;
+
+		Window(Window &&) = delete;
 
 		[[nodiscard]] bool isRunning() const;
 
@@ -23,6 +27,8 @@ namespace Animation
 		void update();
 
 	private:
+		Window(const char *title, int width, int height);
+
 		static void setWindowHints();
 
 		void createWindow(const char *title, int width, int height);

@@ -6,6 +6,13 @@
 
 namespace Animation
 {
+	Window &Window::create(const char *title, int width, int height)
+	{
+		static Window window{title, width, height};
+
+		return window;
+	}
+
 	Window::Window(const char *title, int width, int height)
 	{
 		if (!glfwInit())
@@ -20,9 +27,12 @@ namespace Animation
 		glfwMakeContextCurrent(m_Window);
 		glfwSwapInterval(1);
 
-		if (glewInit() != GLEW_OK)
+		// TODO: initialize this in renderer: depending on the renderer type
+		GLenum status = glewInit();
+		if (status != GLEW_OK)
 		{
-			spdlog::error("Failed to initialize glew library.");
+			const auto *errorMessage = reinterpret_cast<const char *>(glewGetErrorString(status));
+			spdlog::error("Failed to initialize glew library: '{}'.", errorMessage);
 			std::exit(EXIT_FAILURE);
 		}
 	}
@@ -55,7 +65,7 @@ namespace Animation
 	void Window::setWindowHints()
 	{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	}
@@ -65,7 +75,10 @@ namespace Animation
 		m_Window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 		if (!m_Window)
 		{
-			spdlog::error("Failed to create window.");
+			const char *errorMessage;
+			glfwGetError(&errorMessage);
+
+			spdlog::error("Failed to create window: '{}'", errorMessage);
 			glfwTerminate();
 			std::exit(EXIT_FAILURE);
 		}
