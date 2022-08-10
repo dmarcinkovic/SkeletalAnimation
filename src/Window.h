@@ -18,8 +18,6 @@ namespace Animation
 
 		Window(const Window &) = delete;
 
-		Window(Window &&) = delete;
-
 		[[nodiscard]] bool isRunning() const;
 
 		static void clearWindow();
@@ -32,6 +30,8 @@ namespace Animation
 		static void setWindowHints();
 
 		void createWindow(const char *title, int width, int height);
+
+		static void windowResizeCallback(GLFWwindow *, int width, int height);
 	};
 }
 

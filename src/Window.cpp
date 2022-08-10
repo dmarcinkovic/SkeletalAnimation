@@ -1,8 +1,8 @@
-#include <GL/glew.h>
 #include <glm/vec4.hpp>
 #include <spdlog/spdlog.h>
 
 #include "Window.h"
+#include "Renderer.h"
 
 namespace Animation
 {
@@ -24,17 +24,10 @@ namespace Animation
 		setWindowHints();
 		createWindow(title, width, height);
 
+		glfwSetWindowSizeCallback(m_Window, windowResizeCallback);
+
 		glfwMakeContextCurrent(m_Window);
 		glfwSwapInterval(1);
-
-		// TODO: initialize this in renderer: depending on the renderer type
-		GLenum status = glewInit();
-		if (status != GLEW_OK)
-		{
-			const auto *errorMessage = reinterpret_cast<const char *>(glewGetErrorString(status));
-			spdlog::error("Failed to initialize glew library: '{}'.", errorMessage);
-			std::exit(EXIT_FAILURE);
-		}
 	}
 
 	Window::~Window()
@@ -82,5 +75,10 @@ namespace Animation
 			glfwTerminate();
 			std::exit(EXIT_FAILURE);
 		}
+	}
+
+	void Window::windowResizeCallback(GLFWwindow *, int width, int height)
+	{
+		Renderer::getRenderer()->setViewport(width, height);
 	}
 }

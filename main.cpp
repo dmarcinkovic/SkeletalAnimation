@@ -5,10 +5,13 @@
 #include "VertexArrayObjectOpenGL.h"
 #include "VertexBufferObjectOpenGL.h"
 #include "ShaderOpenGL.h"
+#include "RendererOpenGL.h"
 
 int main()
 {
 	Animation::Window &window = Animation::Window::create("Skeletal Animation", 1200, 800);
+
+	std::unique_ptr<Animation::Renderer> &renderer = Animation::RendererOpenGL::getRenderer();
 
 	std::vector<float> vertices{
 			-0.5f, -0.5f, 0.0f,
