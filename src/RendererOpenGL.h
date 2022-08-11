@@ -16,6 +16,8 @@ namespace Animation
 
 		void setViewport(int width, int height) override;
 
+		void clearWindow() override;
+
 	private:
 		RendererOpenGL();
 	};

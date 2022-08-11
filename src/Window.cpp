@@ -1,4 +1,3 @@
-#include <glm/vec4.hpp>
 #include <spdlog/spdlog.h>
 
 #include "Window.h"
@@ -43,10 +42,7 @@ namespace Animation
 
 	void Window::clearWindow()
 	{
-		static const glm::vec4 clearColor{1.0f, 1.0f, 1.0f, 1.0f};
-
-		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Renderer::getRenderer()->clearWindow();
 	}
 
 	void Window::update()
