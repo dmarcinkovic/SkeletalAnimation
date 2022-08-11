@@ -1,7 +1,7 @@
 #ifndef SKELETALANIMATION_SHADEROPENGL_H
 #define SKELETALANIMATION_SHADEROPENGL_H
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include "Shader.h"
 
 namespace Animation

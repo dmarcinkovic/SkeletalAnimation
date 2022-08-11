@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <cassert>
 #include <spdlog/spdlog.h>
 

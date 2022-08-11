@@ -1,11 +1,11 @@
 #include <vector>
 #include <memory>
 
-#include "Window.h"
 #include "VertexArrayObjectOpenGL.h"
 #include "VertexBufferObjectOpenGL.h"
 #include "ShaderOpenGL.h"
 #include "RendererOpenGL.h"
+#include "Window.h"
 
 int main()
 {

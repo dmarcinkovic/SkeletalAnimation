@@ -1,7 +1,7 @@
 #ifndef SKELETALANIMATION_VERTEXARRAYOBJECTOPENGL_H
 #define SKELETALANIMATION_VERTEXARRAYOBJECTOPENGL_H
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include "VertexArrayObject.h"
 

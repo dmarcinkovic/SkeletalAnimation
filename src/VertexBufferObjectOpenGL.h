@@ -1,7 +1,7 @@
 #ifndef SKELETALANIMATION_VERTEXBUFFEROBJECTOPENGL_H
 #define SKELETALANIMATION_VERTEXBUFFEROBJECTOPENGL_H
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include "VertexBufferObject.h"
 
