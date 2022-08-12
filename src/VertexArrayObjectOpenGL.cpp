@@ -30,13 +30,13 @@ namespace Animation
 
 	void VertexArrayObjectOpenGL::unbind()
 	{
-		glBindVertexArray(0);
-
-		for (const auto &vertexBufferObject: m_VertexBufferObjects)
+        for (const auto &vertexBufferObject: m_VertexBufferObjects)
 		{
 			int attributeIndex = vertexBufferObject.first;
 			glDisableVertexAttribArray(attributeIndex);
 		}
+
+        glBindVertexArray(0);
 	}
 
 	void VertexArrayObjectOpenGL::storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject)
