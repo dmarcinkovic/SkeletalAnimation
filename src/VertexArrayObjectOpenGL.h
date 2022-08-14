@@ -22,6 +22,8 @@ namespace Animation
 		void unbind() override;
 
 		void storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject) override;
+
+		void setIndexBufferData(const std::vector<std::uint32_t> &indices) override;
 	};
 }
 
