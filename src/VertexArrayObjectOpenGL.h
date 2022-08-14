@@ -17,9 +17,9 @@ namespace Animation
 
 		~VertexArrayObjectOpenGL() override;
 
-		void bind() override;
+		void bind() const override;
 
-		void unbind() override;
+		void unbind() const override;
 
 		void storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject) override;
 

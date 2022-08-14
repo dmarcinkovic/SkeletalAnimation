@@ -18,6 +18,12 @@ namespace Animation
 
 		void clearWindow() override;
 
+		void draw(std::uint64_t vertexCount) const override;
+
+		[[nodiscard]] std::unique_ptr<VertexArrayObject> createVertexArrayObject() const override;
+
+		[[nodiscard]] std::unique_ptr<VertexBufferObject> createVertexBufferObject() const override;
+
 	private:
 		RendererOpenGL();
 	};

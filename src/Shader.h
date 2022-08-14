@@ -8,9 +8,9 @@ namespace Animation
 	public:
 		virtual ~Shader() = default;
 
-		virtual void startShader() = 0;
+		virtual void startShader() const = 0;
 
-		virtual void stopShader() = 0;
+		virtual void stopShader() const = 0;
 	};
 }
 

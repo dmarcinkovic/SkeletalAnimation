@@ -34,13 +34,13 @@ namespace Animation
 		glDeleteProgram(m_Program);
 	}
 
-	void ShaderOpenGL::startShader()
+	void ShaderOpenGL::startShader() const
 	{
 		assert(m_Program > 0);
 		glUseProgram(m_Program);
 	}
 
-	void ShaderOpenGL::stopShader()
+	void ShaderOpenGL::stopShader() const
 	{
 		glUseProgram(0);
 	}

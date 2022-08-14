@@ -1,11 +1,10 @@
 #include <vector>
 #include <memory>
 
-#include "VertexArrayObjectOpenGL.h"
-#include "VertexBufferObjectOpenGL.h"
 #include "ShaderOpenGL.h"
 #include "RendererOpenGL.h"
 #include "Window.h"
+#include "Mesh.h"
 
 int main()
 {
@@ -20,26 +19,18 @@ int main()
 			0.5f, 0.5f, 0.0f
 	};
 
-	std::unique_ptr<Animation::VertexArrayObject> vao = std::make_unique<Animation::VertexArrayObjectOpenGL>();
-	vao->setIndexBufferData({0, 1, 2, 1, 3, 2});
-	std::unique_ptr<Animation::VertexBufferObject> verticesObject = std::make_unique<Animation::VertexBufferObjectOpenGL>();
+	std::vector<std::uint32_t> indices{0, 1, 2, 1, 3, 2};
 
-	verticesObject->storeFloatData(vertices, 3);
-	vao->storeData(0, std::move(verticesObject));
+	Animation::MeshData triangle(vertices, indices);
+	Animation::Material material(std::make_unique<Animation::ShaderOpenGL>());
 
-	std::unique_ptr<Animation::Shader> shader = std::make_unique<Animation::ShaderOpenGL>();
+	renderer->addMesh(Animation::Mesh(std::move(triangle), std::move(material)));
 
 	while (window.isRunning())
 	{
 		Animation::Window::clearWindow();
 
-		shader->startShader();
-		vao->bind();
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-		vao->unbind();
-		shader->stopShader();
+		renderer->render();
 
 		window.update();
 	}

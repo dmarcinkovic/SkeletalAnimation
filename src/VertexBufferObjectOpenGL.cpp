@@ -16,13 +16,13 @@ namespace Animation
 		glDeleteBuffers(1, &m_Id);
 	}
 
-	void VertexBufferObjectOpenGL::bind()
+	void VertexBufferObjectOpenGL::bind() const
 	{
 		assert(m_Id > 0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_Id);
 	}
 
-	void VertexBufferObjectOpenGL::unbind()
+	void VertexBufferObjectOpenGL::unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}

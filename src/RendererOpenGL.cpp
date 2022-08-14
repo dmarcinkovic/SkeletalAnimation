@@ -2,6 +2,8 @@
 #include <spdlog/spdlog.h>
 
 #include "RendererOpenGL.h"
+#include "VertexArrayObjectOpenGL.h"
+#include "VertexBufferObjectOpenGL.h"
 
 namespace Animation
 {
@@ -34,5 +36,20 @@ namespace Animation
 	{
 		glClearColor(m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void RendererOpenGL::draw(std::uint64_t vertexCount) const
+	{
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertexCount), GL_UNSIGNED_INT, nullptr);
+	}
+
+	std::unique_ptr<VertexArrayObject> RendererOpenGL::createVertexArrayObject() const
+	{
+		return std::make_unique<VertexArrayObjectOpenGL>();
+	}
+
+	std::unique_ptr<VertexBufferObject> RendererOpenGL::createVertexBufferObject() const
+	{
+		return std::make_unique<VertexBufferObjectOpenGL>();
 	}
 }

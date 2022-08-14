@@ -18,7 +18,7 @@ namespace Animation
 		glDeleteVertexArrays(1, &m_Id);
 	}
 
-	void VertexArrayObjectOpenGL::bind()
+	void VertexArrayObjectOpenGL::bind() const
 	{
 		assert(m_Id > 0);
 		glBindVertexArray(m_Id);
@@ -30,7 +30,7 @@ namespace Animation
 		}
 	}
 
-	void VertexArrayObjectOpenGL::unbind()
+	void VertexArrayObjectOpenGL::unbind() const
 	{
 		for (const auto &vertexBufferObject: m_VertexBufferObjects)
 		{

@@ -7,7 +7,7 @@
 
 namespace Animation
 {
-	class IndexBufferOpenGL : public IndexBuffer
+	class IndexBufferOpenGL final : public IndexBuffer
 	{
 	private:
 		GLuint m_Id{};
@@ -17,9 +17,9 @@ namespace Animation
 
 		~IndexBufferOpenGL() override;
 
-		void bind() override;
+		void bind() const override;
 
-		void unbind() override;
+		void unbind() const override;
 
 		void storeData(const std::vector<std::uint32_t> &indices) override;
 	};

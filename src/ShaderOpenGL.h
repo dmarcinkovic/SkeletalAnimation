@@ -2,6 +2,7 @@
 #define SKELETALANIMATION_SHADEROPENGL_H
 
 #include <GL/glew.h>
+
 #include "Shader.h"
 
 namespace Animation
@@ -18,9 +19,9 @@ namespace Animation
 
 		~ShaderOpenGL() override;
 
-		void startShader() override;
+		void startShader() const override;
 
-		void stopShader() override;
+		void stopShader() const override;
 
 	private:
 		void attachShaders() const;

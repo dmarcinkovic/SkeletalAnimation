@@ -17,9 +17,9 @@ namespace Animation
 
 		~VertexBufferObjectOpenGL() override;
 
-		void bind() override;
+		void bind() const override;
 
-		void unbind() override;
+		void unbind() const override;
 
 		void storeFloatData(const std::vector<float> &data, int dataSize) override;
 	};
