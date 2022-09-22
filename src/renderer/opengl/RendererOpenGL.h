@@ -24,6 +24,8 @@ namespace Animation
 
 		[[nodiscard]] std::unique_ptr<VertexBufferObject> createVertexBufferObject() const override;
 
+		[[nodiscard]] std::unique_ptr<Shader> getShader() const override;
+
 	private:
 		RendererOpenGL();
 	};

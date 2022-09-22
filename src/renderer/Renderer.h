@@ -5,6 +5,7 @@
 #include <glm/vec4.hpp>
 
 #include "Mesh.h"
+#include "Shader.h"
 
 namespace Animation
 {
@@ -15,13 +16,19 @@ namespace Animation
 		std::vector<Mesh> m_Meshes;
 
 	public:
-		void render() const;
-
-		void addMesh(Mesh mesh);
-
 		static std::unique_ptr<Renderer> &getRenderer();
 
+		static void setWindowFlags();
+
 		virtual ~Renderer() = default;
+
+		virtual void preRender();
+
+		void render() const;
+
+		virtual void postRender();
+
+		void addMesh(Mesh mesh);
 
 		virtual void setViewport(int width, int height) = 0;
 
@@ -32,6 +39,8 @@ namespace Animation
 		[[nodiscard]] virtual std::unique_ptr<VertexArrayObject> createVertexArrayObject() const = 0;
 
 		[[nodiscard]] virtual std::unique_ptr<VertexBufferObject> createVertexBufferObject() const = 0;
+
+		[[nodiscard]] virtual std::unique_ptr<Shader> getShader() const = 0;
 	};
 }
 

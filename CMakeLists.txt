@@ -6,7 +6,107 @@ set(CMAKE_CXX_STANDARD 20)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(SkeletalAnimation main.cpp src/Window.cpp src/Window.h src/Renderer.cpp src/Renderer.h src/Buffer.h src/VertexArrayObject.cpp src/VertexArrayObject.h src/VertexArrayObjectOpenGL.cpp src/VertexArrayObjectOpenGL.h src/VertexBufferObject.cpp src/VertexBufferObject.h src/VertexBufferObjectOpenGL.cpp src/VertexBufferObjectOpenGL.h src/Shader.h src/ShaderOpenGL.cpp src/ShaderOpenGL.h src/RendererOpenGL.cpp src/RendererOpenGL.h src/IndexBuffer.cpp src/IndexBuffer.h src/IndexBufferOpenGL.cpp src/IndexBufferOpenGL.h src/Material.cpp src/Material.h src/Mesh.cpp src/Mesh.h src/MeshData.cpp src/MeshData.h)
+set(SkeletalAnimationResources
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardFragmentShader.glsl.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardVertexShader.glsl.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardFragmentShader.spv.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardVertexShader.spv.h"
+)
 
-target_include_directories(SkeletalAnimation PRIVATE src/ resources/)
+set(SkeletalAnimationHeaders
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/Buffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/CommandPool.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DeviceExtensions.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffers.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/ImageView.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/ImageViews.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/IndexBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/IndexBufferOpenGL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/IndexBufferVulkan.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/LogicalDevice.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/Material.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Mesh.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/MeshData.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/PhysicalDevice.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/QueueFamily.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/Renderer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/opengl/RendererOpenGL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RendererVulkan.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RenderPass.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RenderSurface.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/Shader.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/opengl/ShaderOpenGL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/vulkan/ShaderVulkan.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SwapChain.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SyncObjects.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexArrayObject.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexArrayObjectOpenGL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexArrayObjectVulkan.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexBufferObject.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.h"
+)
+
+set(SkeletalAnimationSources
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/CommandPool.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DeviceExtensions.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffers.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/ImageView.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/ImageViews.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/IndexBuffer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/IndexBufferOpenGL.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/IndexBufferVulkan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/LogicalDevice.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/Material.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Mesh.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/MeshData.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/PhysicalDevice.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/QueueFamily.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/Renderer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/opengl/RendererOpenGL.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RendererVulkan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RenderPass.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/RenderSurface.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/opengl/ShaderOpenGL.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/vulkan/ShaderVulkan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SwapChain.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SyncObjects.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexArrayObject.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexArrayObjectOpenGL.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexArrayObjectVulkan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexBufferObject.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp" src/buffer/vulkan/VulkanBuffer.cpp src/buffer/vulkan/VulkanBuffer.h)
+
+set(SkeletalAnimationIncludes
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/opengl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/vulkan"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/opengl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/window"
+)
+
+add_executable(SkeletalAnimation
+    main.cpp
+    "${SkeletalAnimationHeaders}"
+    "${SkeletalAnimationSources}"
+    "${SkeletalAnimationResources}"
+)
+
+target_include_directories(SkeletalAnimation PRIVATE ${SkeletalAnimationIncludes})
 target_link_libraries(SkeletalAnimation PRIVATE ${CONAN_LIBS})

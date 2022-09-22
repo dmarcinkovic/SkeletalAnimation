@@ -84,8 +84,8 @@ namespace Animation
 
 	void ShaderOpenGL::createVertexShader()
 	{
-		unsigned char *vertexData = StandardVertexShader_glsl;
-		std::string vertexShaderSource(vertexData, vertexData + StandardVertexShader_glsl_len);
+		unsigned char *vertexData = vertexShader_glsl;
+		std::string vertexShaderSource(vertexData, vertexData + vertexShader_glsl_len);
 
 		m_VertexShader = loadShader(vertexShaderSource, GL_VERTEX_SHADER);
 		assert(m_VertexShader > 0);
@@ -93,8 +93,8 @@ namespace Animation
 
 	void ShaderOpenGL::createFragmentShader()
 	{
-		unsigned char *fragmentData = StandardFragmentShader_glsl;
-		std::string fragmentShaderSource(fragmentData, fragmentData + StandardFragmentShader_glsl_len);
+		unsigned char *fragmentData = fragmentShader_glsl;
+		std::string fragmentShaderSource(fragmentData, fragmentData + fragmentShader_glsl_len);
 
 		m_FragmentShader = loadShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
 		assert(m_FragmentShader > 0);

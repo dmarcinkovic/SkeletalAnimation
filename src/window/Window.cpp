@@ -5,9 +5,9 @@
 
 namespace Animation
 {
-	Window &Window::create(const char *title, int width, int height)
+	Window &Window::getWindow()
 	{
-		static Window window{title, width, height};
+		static Window window{TITLE, WIDTH, HEIGHT};
 
 		return window;
 	}
@@ -55,8 +55,8 @@ namespace Animation
 	{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		Renderer::setWindowFlags();
 	}
 
 	void Window::createWindow(const char *title, int width, int height)
@@ -71,6 +71,27 @@ namespace Animation
 			glfwTerminate();
 			std::exit(EXIT_FAILURE);
 		}
+	}
+
+	GLFWwindow *Window::getRawWindow()
+	{
+		assert(m_Window);
+		return m_Window;
+	}
+
+	void Window::getFramebufferSize(int &width, int &height) const
+	{
+		assert(m_Window);
+		glfwGetFramebufferSize(m_Window, &width, &height);
+	}
+
+	void Window::getValidFramebufferSize(int &width, int &height) const
+	{
+		do
+		{
+			getFramebufferSize(width, height);
+			glfwWaitEvents();
+		} while (width == 0 || height == 0);
 	}
 
 	void Window::windowResizeCallback(GLFWwindow *, int width, int height)

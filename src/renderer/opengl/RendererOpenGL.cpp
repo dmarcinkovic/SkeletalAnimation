@@ -1,9 +1,11 @@
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
 #include "RendererOpenGL.h"
 #include "VertexArrayObjectOpenGL.h"
 #include "VertexBufferObjectOpenGL.h"
+#include "ShaderOpenGL.h"
 
 namespace Animation
 {
@@ -51,5 +53,10 @@ namespace Animation
 	std::unique_ptr<VertexBufferObject> RendererOpenGL::createVertexBufferObject() const
 	{
 		return std::make_unique<VertexBufferObjectOpenGL>();
+	}
+
+	std::unique_ptr<Shader> RendererOpenGL::getShader() const
+	{
+		return std::make_unique<ShaderOpenGL>();
 	}
 }

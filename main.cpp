@@ -1,16 +1,15 @@
 #include <vector>
 #include <memory>
 
-#include "ShaderOpenGL.h"
 #include "RendererOpenGL.h"
 #include "Window.h"
 #include "Mesh.h"
 
 int main()
 {
-	Animation::Window &window = Animation::Window::create("Skeletal Animation", 1200, 800);
+	Animation::Window &window = Animation::Window::getWindow();
 
-	std::unique_ptr<Animation::Renderer> &renderer = Animation::RendererOpenGL::getRenderer();
+	std::unique_ptr<Animation::Renderer> &renderer = Animation::Renderer::getRenderer();
 
 	std::vector<float> vertices{
 			-0.5f, -0.5f, 0.0f,
@@ -22,7 +21,7 @@ int main()
 	std::vector<std::uint32_t> indices{0, 1, 2, 1, 3, 2};
 
 	Animation::MeshData triangle(vertices, indices);
-	Animation::Material material(std::make_unique<Animation::ShaderOpenGL>());
+	Animation::Material material(renderer->getShader());
 
 	renderer->addMesh(Animation::Mesh(std::move(triangle), std::move(material)));
 
@@ -30,7 +29,9 @@ int main()
 	{
 		Animation::Window::clearWindow();
 
+		renderer->preRender();
 		renderer->render();
+		renderer->postRender();
 
 		window.update();
 	}

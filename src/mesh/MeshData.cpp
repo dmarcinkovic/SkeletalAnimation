@@ -8,6 +8,7 @@ namespace Animation
 	MeshData::MeshData(const std::vector<float> &vertices, const std::vector<std::uint32_t> &indices)
 			: m_VertexCount(indices.size()), m_VertexArrayObject(Renderer::getRenderer()->createVertexArrayObject())
 	{
+		assert(m_VertexArrayObject);
 		m_VertexArrayObject->setIndexBufferData(indices);
 
 		std::unique_ptr<VertexBufferObject> positionData = Renderer::getRenderer()->createVertexBufferObject();

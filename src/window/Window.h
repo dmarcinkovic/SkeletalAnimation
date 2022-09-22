@@ -9,10 +9,14 @@ namespace Animation
 	class Window final
 	{
 	private:
+		static constexpr int WIDTH = 1200;
+		static constexpr int HEIGHT = 800;
+		static constexpr const char *TITLE = "Skeletal Animation";
+
 		GLFWwindow *m_Window{};
 
 	public:
-		static Window &create(const char *title, int width, int height);
+		static Window &getWindow();
 
 		~Window();
 
@@ -23,6 +27,17 @@ namespace Animation
 		static void clearWindow();
 
 		void update();
+
+		GLFWwindow *getRawWindow();
+
+		void getFramebufferSize(int &width, int &height) const;
+
+		void getValidFramebufferSize(int &width, int &height) const;
+
+		static inline constexpr const char *getWindowTitle()
+		{
+			return TITLE;
+		}
 
 	private:
 		Window(const char *title, int width, int height);
