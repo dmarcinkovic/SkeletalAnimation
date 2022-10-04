@@ -13,6 +13,7 @@ namespace Animation
 		const std::unique_ptr<Shader> &shader = m_Material.getShader();
 
 		shader->startShader();
+		shader->update();
 		m_MeshData.bindMesh();
 
 		Renderer::getRenderer()->draw(m_MeshData.getVertexCount());

@@ -51,6 +51,10 @@ namespace Animation
 		static void setViewport(VkCommandBuffer commandBuffer, VkExtent2D extent);
 
 		static void setScissor(VkCommandBuffer commandBuffer, VkExtent2D extent);
+
+		void setUniforms();
+
+		void bindUniforms(VkCommandBuffer commandBuffer) const;
 	};
 }
 

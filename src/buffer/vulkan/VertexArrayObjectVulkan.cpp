@@ -24,9 +24,6 @@ namespace Animation
 
 	void VertexArrayObjectVulkan::unbind() const
 	{
-		// TODO: not needed: just wasting vtable access
-		m_IndexBuffer->unbind();
-
 		for (const auto &vertexBuffer: m_VertexBufferObjects)
 		{
 			vertexBuffer.second->bind();

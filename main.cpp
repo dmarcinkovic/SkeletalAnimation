@@ -1,7 +1,7 @@
 #include <vector>
 #include <memory>
 
-#include "RendererOpenGL.h"
+#include "Renderer.h"
 #include "Window.h"
 #include "Mesh.h"
 

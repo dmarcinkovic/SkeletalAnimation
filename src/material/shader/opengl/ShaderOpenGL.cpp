@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 
 #include "ShaderOpenGL.h"
+#include "UniformOpenGL.h"
 #include "StandardVertexShader.glsl.h"
 #include "StandardFragmentShader.glsl.h"
 
@@ -18,6 +19,7 @@ namespace Animation
 		attachShaders();
 		linkProgram();
 		validateProgram();
+		setUniforms();
 	}
 
 	ShaderOpenGL::~ShaderOpenGL()
@@ -131,5 +133,10 @@ namespace Animation
 			glDeleteShader(shaderId);
 			std::exit(EXIT_FAILURE);
 		}
+	}
+
+	void ShaderOpenGL::setUniforms()
+	{
+		addUniform(std::make_unique<UniformOpenGL>(0, m_Program));
 	}
 }

@@ -37,6 +37,8 @@ namespace Animation
 		static GLuint loadShader(const std::string &shaderSource, GLenum type);
 
 		static void debug(GLuint shaderId);
+
+		void setUniforms();
 	};
 }
 

@@ -25,6 +25,7 @@ namespace Animation
 			  m_CommandPool(m_Device.getDevice(), m_Device.getPhysicalDevice(), m_Device.getSurface()),
 			  m_SyncObjects(m_Device.getDevice(), Animation::CommandPool::size())
 	{
+		spdlog::info("Initialized Vulkan renderer.");
 	}
 
 	RendererVulkan::~RendererVulkan()

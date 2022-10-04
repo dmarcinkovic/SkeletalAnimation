@@ -19,6 +19,8 @@ namespace Animation
 
 		VulkanBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 
+		VulkanBuffer(const VulkanBuffer &) = delete;
+
 		~VulkanBuffer();
 
 		VkBuffer &getBuffer();

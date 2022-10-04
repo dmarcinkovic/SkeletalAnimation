@@ -1,2 +1,2 @@
 # SkeletalAnimation
-Skeletal Animation using OpenGL
+Skeletal Animation using OpenGL and Vulkan

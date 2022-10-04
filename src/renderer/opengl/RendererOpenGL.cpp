@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
 #include "RendererOpenGL.h"
@@ -27,6 +26,8 @@ namespace Animation
 			spdlog::error("Failed to initialize glew library: '{}'.", errorMessage);
 			std::exit(EXIT_FAILURE);
 		}
+
+		spdlog::info("Initialized OpenGL renderer.");
 	}
 
 	void RendererOpenGL::setViewport(int width, int height)

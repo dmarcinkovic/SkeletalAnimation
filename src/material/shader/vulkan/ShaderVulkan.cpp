@@ -5,6 +5,7 @@
 #include "StandardVertexShader.spv.h"
 #include "StandardFragmentShader.spv.h"
 #include "RendererVulkan.h"
+#include "UniformVulkan.h"
 
 namespace
 {
@@ -115,6 +116,7 @@ namespace Animation
 
 		createPipelineLayout(device);
 		createShader(device);
+		setUniforms();
 	}
 
 	ShaderVulkan::~ShaderVulkan()
@@ -134,6 +136,8 @@ namespace Animation
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 		setViewport(commandBuffer, renderer->getSwapChain().getExtent());
 		setScissor(commandBuffer, renderer->getSwapChain().getExtent());
+
+		bindUniforms(commandBuffer);
 	}
 
 	void ShaderVulkan::stopShader() const
@@ -341,5 +345,22 @@ namespace Animation
 		scissor.extent = extent;
 
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+	}
+
+	void ShaderVulkan::setUniforms()
+	{
+		addUniform(std::make_unique<UniformVulkan>(0));
+	}
+
+	void ShaderVulkan::bindUniforms(VkCommandBuffer commandBuffer) const
+	{
+		for (const auto &uniform: m_Uniforms)
+		{
+			assert(uniform);
+			const auto *uniformVulkan = dynamic_cast<UniformVulkan *>(uniform.get());
+			assert(uniformVulkan);
+
+			uniformVulkan->bindDescriptorSet(commandBuffer);
+		}
 	}
 }

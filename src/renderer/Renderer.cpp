@@ -1,7 +1,7 @@
 #include <GLFW/glfw3.h>
 
-#include "Renderer.h"
 #include "RendererVulkan.h"
+#include "RendererOpenGL.h"
 
 namespace Animation
 {
@@ -9,6 +9,7 @@ namespace Animation
 	{
 		// TODO: do not hardcode: find which render is better for given OS
 		return RendererVulkan::getRenderer();
+//		return RendererOpenGL::getRenderer();
 	}
 
 	void Renderer::setWindowFlags()
