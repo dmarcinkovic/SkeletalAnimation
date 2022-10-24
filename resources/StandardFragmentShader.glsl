@@ -1,4 +1,6 @@
-#version 430
+#version 450
+
+layout (location = 0) in vec2 textureCoordinates;
 
 layout(location = 0) out vec4 outColor;
 
@@ -6,7 +8,9 @@ layout (binding = 0) uniform UniformBufferObject {
     vec4 color;
 } uniformObject;
 
+layout (binding = 1) uniform sampler2D texSampler;
+
 void main()
 {
-    outColor = uniformObject.color;
+    outColor = texture(texSampler, textureCoordinates);
 }

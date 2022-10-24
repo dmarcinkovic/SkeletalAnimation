@@ -23,6 +23,8 @@ namespace Animation
 
 		void stopShader() const override;
 
+		void setTexture(const std::unique_ptr<Texture> &texture) override;
+
 	private:
 		void attachShaders() const;
 
@@ -37,8 +39,6 @@ namespace Animation
 		static GLuint loadShader(const std::string &shaderSource, GLenum type);
 
 		static void debug(GLuint shaderId);
-
-		void setUniforms();
 	};
 }
 

@@ -6,6 +6,7 @@
 #include "StandardFragmentShader.spv.h"
 #include "RendererVulkan.h"
 #include "UniformVulkan.h"
+#include "TextureVulkan.h"
 
 namespace
 {
@@ -116,7 +117,6 @@ namespace Animation
 
 		createPipelineLayout(device);
 		createShader(device);
-		setUniforms();
 	}
 
 	ShaderVulkan::~ShaderVulkan()
@@ -137,11 +137,16 @@ namespace Animation
 		setViewport(commandBuffer, renderer->getSwapChain().getExtent());
 		setScissor(commandBuffer, renderer->getSwapChain().getExtent());
 
+		assert(m_Uniform);
+		m_Uniform->bind();
+		// TODO: put code inside to bind() and remove it
 		bindUniforms(commandBuffer);
 	}
 
 	void ShaderVulkan::stopShader() const
 	{
+		m_Uniform->unbind();
+
 		RendererVulkan *renderer = getRenderer();
 		VkCommandBuffer commandBuffer = renderer->getCurrentCommandBuffer();
 
@@ -172,13 +177,14 @@ namespace Animation
 		VkPipelineColorBlendAttachmentState blendAttachmentState = getBlendAttachmentState();
 		colorBlendInfo.pAttachments = &blendAttachmentState;
 
+		std::vector<VkVertexInputBindingDescription> bindingDescriptions = getBindingDescription();
+		std::vector<VkVertexInputAttributeDescription> attributeDescriptions = getAttributeDescription();
+
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		VkVertexInputBindingDescription bindingDescription = getBindingDescription();
-		std::vector<VkVertexInputAttributeDescription> attributeDescriptions = getAttributeDescription();
-		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.vertexBindingDescriptionCount = bindingDescriptions.size();
 		vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
-		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
 		VkPipelineDynamicStateCreateInfo dynamicState{};
@@ -257,26 +263,38 @@ namespace Animation
 		return shaderModule;
 	}
 
-	VkVertexInputBindingDescription ShaderVulkan::getBindingDescription()
+	std::vector<VkVertexInputBindingDescription> ShaderVulkan::getBindingDescription()
 	{
-		VkVertexInputBindingDescription bindingDescription{};
-		bindingDescription.binding = 0;
-		// TODO: do not hardcode this 3: This is data size from vertex object
-		bindingDescription.stride = 3 * sizeof(float);
-		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		constexpr int numberOfBindingDescriptions = 2;
+		std::vector<VkVertexInputBindingDescription> bindingDescriptions(numberOfBindingDescriptions);
 
-		return bindingDescription;
+		bindingDescriptions[0].binding = 0;
+		// TODO: do not hardcode this 3: This is data size from vertex object
+		bindingDescriptions[0].stride = 3 * sizeof(float);
+		bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		bindingDescriptions[1].binding = 1;
+		// TODO: do not hardcode this 2: This is data size from vertex object
+		bindingDescriptions[1].stride = 2 * sizeof(float);
+		bindingDescriptions[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		return bindingDescriptions;
 	}
 
 	std::vector<VkVertexInputAttributeDescription> ShaderVulkan::getAttributeDescription()
 	{
-		constexpr int numberOfAttributeDescriptions = 1;
+		constexpr int numberOfAttributeDescriptions = 2;
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(numberOfAttributeDescriptions);
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
 		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[0].offset = 0;
+
+		attributeDescriptions[1].binding = 0;
+		attributeDescriptions[1].location = 1;
+		attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[1].offset = 0;
 
 		return attributeDescriptions;
 	}
@@ -347,20 +365,25 @@ namespace Animation
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	void ShaderVulkan::setUniforms()
-	{
-		addUniform(std::make_unique<UniformVulkan>(0));
-	}
-
 	void ShaderVulkan::bindUniforms(VkCommandBuffer commandBuffer) const
 	{
-		for (const auto &uniform: m_Uniforms)
-		{
-			assert(uniform);
-			const auto *uniformVulkan = dynamic_cast<UniformVulkan *>(uniform.get());
-			assert(uniformVulkan);
+		// TODO: put this in uniform bind method
+		assert(m_Uniform);
+		const auto *uniformVulkan = dynamic_cast<UniformVulkan *>(m_Uniform.get());
+		assert(uniformVulkan);
+		uniformVulkan->bindDescriptorSet(commandBuffer);
+	}
 
-			uniformVulkan->bindDescriptorSet(commandBuffer);
-		}
+	void ShaderVulkan::setTexture(const std::unique_ptr<Texture> &texture)
+	{
+		// TODO: put this in separate method
+		assert(texture);
+		auto *textureVulkan = dynamic_cast<TextureVulkan *>(texture.get());
+		assert(textureVulkan);
+
+		std::unique_ptr<UniformVulkan> uniform = std::make_unique<UniformVulkan>(0, 1);
+		textureVulkan->createTexture(uniform);
+
+		m_Uniform = std::move(uniform);
 	}
 }

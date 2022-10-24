@@ -9,22 +9,30 @@ namespace Animation
 	{
 	private:
 		GLuint m_UniformId{};
+		GLuint m_TextureId{};
+		GLint m_TextureLocation{};
 
 	public:
-		UniformOpenGL(std::uint32_t binding, GLuint programId);
+		UniformOpenGL(std::uint32_t uniformBinding, std::uint32_t samplerBinding, GLuint programId);
 
 		~UniformOpenGL() override = default;
 
+		void bind() const override;
+
 		void update() override;
+
+		void unbind() const override;
+
+		void bindSampler() const;
+
+		static void unbindSampler();
 
 	private:
 		void createBuffer();
 
 		void allocateBuffer(GLuint programId);
 
-		void bind() const;
-
-		static void unbind();
+		void createSampler(GLuint programId);
 	};
 }
 

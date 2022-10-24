@@ -19,6 +19,10 @@ namespace Animation
 		// TODO: create functions that will parse the mesh using assimp library
 
 		// TODO: remove this constructor
+		MeshData(const std::vector<float> &vertices, const std::vector<float> &textureCoordinates,
+				 const std::vector<std::uint32_t> &indices);
+
+		// TODO: remove this constructor
 		MeshData(const std::vector<float> &vertices, const std::vector<std::uint32_t> &indices);
 
 		[[nodiscard]] std::uint64_t getVertexCount() const;

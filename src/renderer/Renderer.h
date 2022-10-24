@@ -6,6 +6,7 @@
 
 #include "Mesh.h"
 #include "Shader.h"
+#include "Texture.h"
 
 namespace Animation
 {
@@ -41,6 +42,8 @@ namespace Animation
 		[[nodiscard]] virtual std::unique_ptr<VertexBufferObject> createVertexBufferObject() const = 0;
 
 		[[nodiscard]] virtual std::unique_ptr<Shader> getShader() const = 0;
+
+		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const = 0;
 	};
 }
 

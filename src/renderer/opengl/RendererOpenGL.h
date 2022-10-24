@@ -26,6 +26,8 @@ namespace Animation
 
 		[[nodiscard]] std::unique_ptr<Shader> getShader() const override;
 
+		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const override;
+
 	private:
 		RendererOpenGL();
 	};

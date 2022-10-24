@@ -5,6 +5,7 @@
 #include "UniformOpenGL.h"
 #include "StandardVertexShader.glsl.h"
 #include "StandardFragmentShader.glsl.h"
+#include "TextureOpenGL.h"
 
 namespace Animation
 {
@@ -19,7 +20,6 @@ namespace Animation
 		attachShaders();
 		linkProgram();
 		validateProgram();
-		setUniforms();
 	}
 
 	ShaderOpenGL::~ShaderOpenGL()
@@ -40,10 +40,14 @@ namespace Animation
 	{
 		assert(m_Program > 0);
 		glUseProgram(m_Program);
+
+		assert(m_Uniform);
+		m_Uniform->bind();
 	}
 
 	void ShaderOpenGL::stopShader() const
 	{
+		m_Uniform->unbind();
 		glUseProgram(0);
 	}
 
@@ -135,8 +139,16 @@ namespace Animation
 		}
 	}
 
-	void ShaderOpenGL::setUniforms()
+	void ShaderOpenGL::setTexture(const std::unique_ptr<Texture> &texture)
 	{
-		addUniform(std::make_unique<UniformOpenGL>(0, m_Program));
+		// TODO: move these three line to separate function
+		assert(texture);
+		auto *textureOpenGL = dynamic_cast<TextureOpenGL *>(texture.get());
+		assert(textureOpenGL);
+
+		std::unique_ptr<UniformOpenGL> uniform = std::make_unique<UniformOpenGL>(0, 1, m_Program);
+		textureOpenGL->createTexture(uniform);
+
+		m_Uniform = std::move(uniform);
 	}
 }

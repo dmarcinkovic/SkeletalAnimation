@@ -5,13 +5,14 @@
 #include <memory>
 
 #include "Uniform.h"
+#include "Texture.h"
 
 namespace Animation
 {
 	class Shader
 	{
 	protected:
-		std::vector<std::unique_ptr<Uniform>> m_Uniforms;
+		std::unique_ptr<Uniform> m_Uniform;
 
 	public:
 		virtual ~Shader() = default;
@@ -20,9 +21,11 @@ namespace Animation
 
 		virtual void stopShader() const = 0;
 
+		virtual void setTexture(const std::unique_ptr<Texture> &texture) = 0;
+
 		void update();
 
-	protected:
+		// TODO: remove this function
 		void addUniform(std::unique_ptr<Uniform> uniform);
 	};
 }

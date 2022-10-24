@@ -5,6 +5,7 @@
 #include "VertexArrayObjectOpenGL.h"
 #include "VertexBufferObjectOpenGL.h"
 #include "ShaderOpenGL.h"
+#include "TextureOpenGL.h"
 
 namespace Animation
 {
@@ -59,5 +60,10 @@ namespace Animation
 	std::unique_ptr<Shader> RendererOpenGL::getShader() const
 	{
 		return std::make_unique<ShaderOpenGL>();
+	}
+
+	std::unique_ptr<Texture> RendererOpenGL::getTexture(const std::filesystem::path &path) const
+	{
+		return std::make_unique<TextureOpenGL>(path);
 	}
 }

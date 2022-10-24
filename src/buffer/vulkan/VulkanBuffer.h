@@ -31,16 +31,20 @@ namespace Animation
 
 		static VkCommandBuffer getCurrentCommandBuffer();
 
+		static std::uint32_t findMemoryType(std::uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+		static VkCommandBuffer beginCommand(const LogicalDevice &device, VkCommandPool commandPool);
+
+		static void endCommand(const LogicalDevice &device, VkCommandPool commandPool, VkCommandBuffer commandBuffer);
+
+		static VkCommandPool getCommandPool();
+
 	private:
 		static void createBuffer(VkDevice device, VkBuffer &buffer, const VkBufferCreateInfo &bufferInfo);
 
 		static VkMemoryRequirements getMemoryRequirements(VkDevice device, VkBuffer buffer);
 
 		static void allocateBufferMemory(VkDevice device, const VkMemoryAllocateInfo &info, VkDeviceMemory &memory);
-
-		static std::uint32_t findMemoryType(std::uint32_t typeFilter, VkMemoryPropertyFlags properties);
-
-		static VkCommandPool getCommandPool();
 
 		VkMemoryAllocateInfo getAllocateInfo(VkDevice device, VkMemoryPropertyFlags properties) const;
 

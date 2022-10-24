@@ -27,6 +27,8 @@ namespace Animation
 
 		void stopShader() const override;
 
+		void setTexture(const std::unique_ptr<Texture> &texture) override;
+
 	private:
 		void createShader(const LogicalDevice &device);
 
@@ -36,7 +38,7 @@ namespace Animation
 
 		void createPipelineLayout(const LogicalDevice &device);
 
-		static VkVertexInputBindingDescription getBindingDescription();
+		static std::vector<VkVertexInputBindingDescription> getBindingDescription();
 
 		static std::vector<VkVertexInputAttributeDescription> getAttributeDescription();
 
@@ -51,8 +53,6 @@ namespace Animation
 		static void setViewport(VkCommandBuffer commandBuffer, VkExtent2D extent);
 
 		static void setScissor(VkCommandBuffer commandBuffer, VkExtent2D extent);
-
-		void setUniforms();
 
 		void bindUniforms(VkCommandBuffer commandBuffer) const;
 	};

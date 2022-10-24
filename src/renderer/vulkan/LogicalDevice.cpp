@@ -18,14 +18,14 @@ namespace Animation
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfo = getQueueCreateInfo(family);
 		const std::vector<const char *> deviceExtensions = DeviceExtensions::getDeviceExtensions();
 
-		VkPhysicalDeviceFeatures deviceFeatures{};
+		VkPhysicalDeviceFeatures deviceFeatures{.samplerAnisotropy = VK_TRUE};
 
 		VkDeviceCreateInfo deviceInfo{};
 		deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		deviceInfo.queueCreateInfoCount = queueCreateInfo.size();
 		deviceInfo.pQueueCreateInfos = queueCreateInfo.data();
 		deviceInfo.pEnabledFeatures = &deviceFeatures;
-		deviceInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+		deviceInfo.enabledExtensionCount = static_cast<std::uint32_t>(deviceExtensions.size());
 		deviceInfo.ppEnabledExtensionNames = deviceExtensions.data();
 		deviceInfo.enabledLayerCount = 0;
 

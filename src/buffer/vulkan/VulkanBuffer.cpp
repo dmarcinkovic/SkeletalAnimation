@@ -17,7 +17,7 @@ namespace
 		return bufferInfo;
 	}
 
-	VkCommandBufferAllocateInfo getCommandBufferInfo(VkCommandPool commandPool)
+	VkCommandBufferAllocateInfo getCommandBufferAllocateInfo(VkCommandPool commandPool)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -97,23 +97,14 @@ namespace Animation
 	void VulkanBuffer::copyBuffer(VkBuffer sourceBuffer, VkBuffer destinationBuffer, VkDeviceSize size)
 	{
 		const LogicalDevice &device = LogicalDevice::getInstance();
+
 		VkCommandPool commandPool = getCommandPool();
-
-		VkCommandBufferAllocateInfo allocInfo = getCommandBufferInfo(commandPool);
-
-		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(device.getDevice(), &allocInfo, &commandBuffer);
-
-		VkCommandBufferBeginInfo beginInfo = getCommandBufferInfo();
-		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+		VkCommandBuffer commandBuffer = beginCommand(device, commandPool);
 
 		VkBufferCopy copyRegion = getBufferCopy(size);
 		vkCmdCopyBuffer(commandBuffer, sourceBuffer, destinationBuffer, 1, &copyRegion);
 
-		vkEndCommandBuffer(commandBuffer);
-
-		submit(device, commandBuffer);
-		vkFreeCommandBuffers(device.getDevice(), commandPool, 1, &commandBuffer);
+		endCommand(device, commandPool, commandBuffer);
 	}
 
 	void VulkanBuffer::createBuffer(VkDevice device, VkBuffer &buffer, const VkBufferCreateInfo &bufferInfo)
@@ -184,10 +175,9 @@ namespace Animation
 		submitInfo.pCommandBuffers = &commandBuffer;
 
 		VkQueue graphicsQueue = device.getGraphicsQueue();
-		VkQueue presentQueue = device.getGraphicsQueue();
 
 		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(presentQueue);
+		vkQueueWaitIdle(graphicsQueue);
 	}
 
 	VkCommandPool VulkanBuffer::getCommandPool()
@@ -198,5 +188,27 @@ namespace Animation
 	VkCommandBuffer VulkanBuffer::getCurrentCommandBuffer()
 	{
 		return getRenderer()->getCurrentCommandBuffer();
+	}
+
+	VkCommandBuffer VulkanBuffer::beginCommand(const LogicalDevice &device, VkCommandPool commandPool)
+	{
+		VkCommandBufferAllocateInfo allocInfo = getCommandBufferAllocateInfo(commandPool);
+
+		VkCommandBuffer commandBuffer;
+		vkAllocateCommandBuffers(device.getDevice(), &allocInfo, &commandBuffer);
+		assert(commandBuffer != VK_NULL_HANDLE);
+
+		VkCommandBufferBeginInfo beginInfo = getCommandBufferInfo();
+		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+		return commandBuffer;
+	}
+
+	void VulkanBuffer::endCommand(const LogicalDevice &device, VkCommandPool commandPool, VkCommandBuffer commandBuffer)
+	{
+		vkEndCommandBuffer(commandBuffer);
+
+		submit(device, commandBuffer);
+		vkFreeCommandBuffers(device.getDevice(), commandPool, 1, &commandBuffer);
 	}
 }

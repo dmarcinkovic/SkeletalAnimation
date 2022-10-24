@@ -58,6 +58,8 @@ namespace Animation
 
 		[[nodiscard]] std::unique_ptr<Shader> getShader() const override;
 
+		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const override;
+
 		[[nodiscard]] const RenderPass &getRenderPass() const;
 
 		[[nodiscard]] VkCommandBuffer getCurrentCommandBuffer() const;

@@ -45,7 +45,10 @@ namespace Animation
 			swapChainSuitable = SwapChainSupportDetails::isSwapChainSuitable(device, surface);
 		}
 
-		return queueFamily.isComplete() && extensionsSupported && swapChainSuitable;
+		VkPhysicalDeviceFeatures features;
+		vkGetPhysicalDeviceFeatures(device, &features);
+
+		return queueFamily.isComplete() && extensionsSupported && swapChainSuitable && features.samplerAnisotropy;
 	}
 
 	bool PhysicalDevice::pickSuitableDevice(VkInstance instance, VkSurfaceKHR surface, std::uint32_t numberOfDevices)

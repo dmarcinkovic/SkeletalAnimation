@@ -10,15 +10,14 @@ namespace Animation
 
 	void Mesh::render() const
 	{
-		const std::unique_ptr<Shader> &shader = m_Material.getShader();
+		m_Material.start();
 
-		shader->startShader();
-		shader->update();
+		m_Material.update();
 		m_MeshData.bindMesh();
 
 		Renderer::getRenderer()->draw(m_MeshData.getVertexCount());
 
 		m_MeshData.unbindMesh();
-		shader->stopShader();
+		m_Material.end();
 	}
 }

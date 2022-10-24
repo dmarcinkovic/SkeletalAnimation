@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Shader.h"
+#include "Texture.h"
 
 namespace Animation
 {
@@ -11,12 +12,16 @@ namespace Animation
 	{
 	private:
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Texture> m_Texture;
 
 	public:
-		// TODO: add texture and remove explicit keyword
-		explicit Material(std::unique_ptr<Shader> shader);
+		Material(std::unique_ptr<Shader> shader, std::unique_ptr<Texture> texture);
 
-		[[nodiscard]] const std::unique_ptr<Shader> &getShader() const;
+		void start() const;
+
+		void update() const;
+
+		void end() const;
 	};
 }
 

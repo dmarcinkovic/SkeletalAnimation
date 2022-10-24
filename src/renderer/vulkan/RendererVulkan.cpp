@@ -5,6 +5,7 @@
 #include "VertexArrayObjectVulkan.h"
 #include "VertexBufferObjectVulkan.h"
 #include "ShaderVulkan.h"
+#include "TextureVulkan.h"
 #include "Window.h"
 
 namespace Animation
@@ -207,5 +208,10 @@ namespace Animation
 			spdlog::error("Failed to submit draw command buffer.");
 			std::exit(EXIT_FAILURE);
 		}
+	}
+
+	std::unique_ptr<Texture> RendererVulkan::getTexture(const std::filesystem::path &path) const
+	{
+		return std::make_unique<TextureVulkan>(path);
 	}
 }

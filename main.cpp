@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <spdlog/spdlog.h>
 
 #include "Renderer.h"
 #include "Window.h"
@@ -18,11 +19,21 @@ int main()
 			0.5f, 0.5f, 0.0f
 	};
 
+	std::vector<float> textureCoordinates{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f
+	};
+
 	std::vector<std::uint32_t> indices{0, 1, 2, 1, 3, 2};
 
-	Animation::MeshData triangle(vertices, indices);
-	Animation::Material material(renderer->getShader());
+	std::filesystem::path texturePath("/home/david/CLionProjects/OpenGLLibrary/res/texture.jpg");
+	auto shader = renderer->getShader();
+	auto texture = renderer->getTexture(texturePath);
+	Animation::Material material(std::move(shader), std::move(texture));
 
+	Animation::MeshData triangle(vertices, textureCoordinates, indices);
 	renderer->addMesh(Animation::Mesh(std::move(triangle), std::move(material)));
 
 	while (window.isRunning())

@@ -93,7 +93,7 @@ namespace Animation
 
 	VkExtent2D SwapChainSupportDetails::chooseSwapExtent() const
 	{
-		if (m_Capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+		if (m_Capabilities.currentExtent.width != std::numeric_limits<std::uint32_t>::max())
 		{
 			return m_Capabilities.currentExtent;
 		}
@@ -101,7 +101,7 @@ namespace Animation
 		int width, height;
 		Window::getWindow().getFramebufferSize(width, height);
 
-		VkExtent2D extent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
+		VkExtent2D extent = {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)};
 
 		{
 			std::uint32_t minImageWidth = m_Capabilities.minImageExtent.width;
