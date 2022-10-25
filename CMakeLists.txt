@@ -7,10 +7,10 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 set(SkeletalAnimationResources
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardFragmentShader.glsl.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardVertexShader.glsl.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardFragmentShader.spv.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/StandardVertexShader.spv.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/FragmentShader.glsl.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/VertexShader.glsl.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/FragmentShader.spv.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/VertexShader.spv.h"
 )
 
 set(SkeletalAnimationHeaders

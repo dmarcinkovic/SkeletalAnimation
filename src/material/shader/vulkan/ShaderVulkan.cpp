@@ -2,8 +2,8 @@
 #include <cassert>
 
 #include "ShaderVulkan.h"
-#include "StandardVertexShader.spv.h"
-#include "StandardFragmentShader.spv.h"
+#include "VertexShader.spv.h"
+#include "FragmentShader.spv.h"
 #include "RendererVulkan.h"
 #include "UniformVulkan.h"
 #include "TextureVulkan.h"

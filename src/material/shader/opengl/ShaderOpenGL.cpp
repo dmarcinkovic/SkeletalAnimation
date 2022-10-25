@@ -3,8 +3,8 @@
 
 #include "ShaderOpenGL.h"
 #include "UniformOpenGL.h"
-#include "StandardVertexShader.glsl.h"
-#include "StandardFragmentShader.glsl.h"
+#include "VertexShader.glsl.h"
+#include "FragmentShader.glsl.h"
 #include "TextureOpenGL.h"
 
 namespace Animation
