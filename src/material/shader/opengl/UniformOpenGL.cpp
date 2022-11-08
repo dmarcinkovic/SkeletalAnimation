@@ -1,6 +1,4 @@
 #include <GL/glew.h>
-#include <glm/vec4.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <cassert>
 
 #include "UniformOpenGL.h"
@@ -16,12 +14,11 @@ namespace Animation
 		createSampler(programId);
 	}
 
-	void UniformOpenGL::update()
+	void UniformOpenGL::update(const UniformData &uniformData)
 	{
 		static constexpr int TEXTURE_UNIT = 0;
-		glm::vec4 color{0.4f, 0.4f, 1.0f, 1};
 
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(color), glm::value_ptr(color));
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(UniformData), &uniformData);
 
 		glUniform1i(m_TextureLocation, TEXTURE_UNIT);
 		glActiveTexture(GL_TEXTURE0 + TEXTURE_UNIT);
@@ -53,14 +50,13 @@ namespace Animation
 	void UniformOpenGL::allocateBuffer(GLuint programId)
 	{
 		bind();
-		// TODO: change type of uniform
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformData), nullptr, GL_STATIC_DRAW);
 
 		GLuint uniformIndex = glGetUniformBlockIndex(programId, "UniformBufferObject");
 		assert(uniformIndex != GL_INVALID_INDEX);
 
 		glUniformBlockBinding(programId, uniformIndex, m_UniformBinding);
-		glBindBufferRange(GL_UNIFORM_BUFFER, m_UniformBinding, m_UniformId, 0, sizeof(glm::vec4));
+		glBindBufferRange(GL_UNIFORM_BUFFER, m_UniformBinding, m_UniformId, 0, sizeof(UniformData));
 
 		unbind();
 	}

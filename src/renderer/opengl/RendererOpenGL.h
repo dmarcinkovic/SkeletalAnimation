@@ -7,6 +7,10 @@ namespace Animation
 {
 	class RendererOpenGL final : public Renderer
 	{
+	private:
+		int m_Width{};
+		int m_Height{};
+
 	public:
 		static std::unique_ptr<Renderer> &getRenderer();
 
@@ -27,6 +31,8 @@ namespace Animation
 		[[nodiscard]] std::unique_ptr<Shader> getShader() const override;
 
 		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const override;
+
+		[[nodiscard]] float getWindowAspectRatio() const;
 
 	private:
 		RendererOpenGL();

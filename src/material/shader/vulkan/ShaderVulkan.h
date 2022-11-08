@@ -8,7 +8,6 @@
 #include "Shader.h"
 #include "LogicalDevice.h"
 #include "RenderPass.h"
-#include "RendererVulkan.h"
 
 namespace Animation
 {
@@ -17,6 +16,7 @@ namespace Animation
 	private:
 		VkPipelineLayout m_PipelineLayout{};
 		VkPipeline m_GraphicsPipeline{};
+		VkDescriptorSetLayout m_DescriptorSetLayout{};
 
 	public:
 		ShaderVulkan();
@@ -29,6 +29,8 @@ namespace Animation
 
 		void setTexture(const std::unique_ptr<Texture> &texture) override;
 
+		[[nodiscard]] glm::mat4 getProjectionMatrix() const override;
+
 	private:
 		void createShader(const LogicalDevice &device);
 
@@ -38,23 +40,33 @@ namespace Animation
 
 		void createPipelineLayout(const LogicalDevice &device);
 
+		void createDescriptorLayout(const LogicalDevice &device);
+
 		static std::vector<VkVertexInputBindingDescription> getBindingDescription();
 
 		static std::vector<VkVertexInputAttributeDescription> getAttributeDescription();
 
-		static RendererVulkan *getRenderer();
+		static class RendererVulkan *getRenderer();
 
 		static const RenderPass &getRenderPass();
 
+		static VkDescriptorSetLayoutBinding getUniformLayoutBinding();
+
+		static VkDescriptorSetLayoutBinding getSamplerLayoutBinding();
+
 		static void beginCommandBuffer(VkCommandBuffer commandBuffer);
 
-		static void beginRenderPass(const RendererVulkan *renderer, VkCommandBuffer commandBuffer);
+		static void beginRenderPass(const class RendererVulkan *renderer, VkCommandBuffer commandBuffer);
 
 		static void setViewport(VkCommandBuffer commandBuffer, VkExtent2D extent);
 
 		static void setScissor(VkCommandBuffer commandBuffer, VkExtent2D extent);
 
 		void bindUniforms(VkCommandBuffer commandBuffer) const;
+
+		static class TextureVulkan *getTexture(const std::unique_ptr<Texture> &texture);
+
+		[[nodiscard]] std::unique_ptr<class UniformVulkan> createUniform() const;
 	};
 }
 

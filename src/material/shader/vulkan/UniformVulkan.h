@@ -14,7 +14,6 @@ namespace Animation
 		friend class TextureVulkan;
 
 		VkDevice m_Device{};
-		VkDescriptorSetLayout m_DescriptorSetLayout{};
 		VkDescriptorPool m_DescriptorPool{};
 
 		std::vector<std::unique_ptr<VulkanBuffer>> m_UniformBuffers;
@@ -26,7 +25,7 @@ namespace Animation
 		std::uint32_t m_CurrentFrame{};
 
 	public:
-		UniformVulkan(std::uint32_t uniformBinding, std::uint32_t samplerBinding);
+		UniformVulkan(std::uint32_t uniformBinding, std::uint32_t samplerBinding, VkDescriptorSetLayout layout);
 
 		~UniformVulkan() override;
 
@@ -34,22 +33,20 @@ namespace Animation
 
 		void bind() const override;
 
-		void update() override;
+		void update(const UniformData &uniformData) override;
 
 		void unbind() const override;
 
-		void bindDescriptorSet(VkCommandBuffer commandBuffer) const;
+		void bindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const;
 
 	private:
-		void createDescriptorLayout();
-
 		void createUniformBuffers();
 
 		void createDescriptorPool();
 
 		static VkDescriptorPoolSize getDescriptorPoolSize(VkDescriptorType type);
 
-		void createDescriptorSets();
+		void createDescriptorSets(VkDescriptorSetLayout descriptorSetLayout);
 
 		void updateDescriptorSets();
 

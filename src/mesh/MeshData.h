@@ -20,7 +20,7 @@ namespace Animation
 
 		// TODO: remove this constructor
 		MeshData(const std::vector<float> &vertices, const std::vector<float> &textureCoordinates,
-				 const std::vector<std::uint32_t> &indices);
+				 const std::vector<float> &normals, const std::vector<std::uint32_t> &indices);
 
 		// TODO: remove this constructor
 		MeshData(const std::vector<float> &vertices, const std::vector<std::uint32_t> &indices);

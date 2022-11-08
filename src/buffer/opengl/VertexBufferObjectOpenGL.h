@@ -21,7 +21,7 @@ namespace Animation
 
 		void unbind() const override;
 
-		void storeFloatData(const std::vector<float> &data, int dataSize) override;
+		void storeFloatData(std::uint32_t binding, const std::vector<float> &data, int dataSize) override;
 	};
 }
 

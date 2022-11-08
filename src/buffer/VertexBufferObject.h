@@ -2,6 +2,7 @@
 #define SKELETALANIMATION_VERTEXBUFFEROBJECT_H
 
 #include <vector>
+#include <cstdint>
 
 #include "Buffer.h"
 
@@ -11,11 +12,12 @@ namespace Animation
 	{
 	protected:
 		int m_DataSize{};
+		std::uint32_t m_Binding{};
 
 	public:
 		~VertexBufferObject() override = default;
 
-		virtual void storeFloatData(const std::vector<float> &data, int dataSize) = 0;
+		virtual void storeFloatData(std::uint32_t binding, const std::vector<float> &data, int dataSize) = 0;
 
 		[[nodiscard]] int getDataSize() const;
 	};

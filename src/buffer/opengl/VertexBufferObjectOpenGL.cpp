@@ -1,3 +1,4 @@
+
 #include <cassert>
 
 #include "VertexBufferObjectOpenGL.h"
@@ -27,10 +28,11 @@ namespace Animation
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void VertexBufferObjectOpenGL::storeFloatData(const std::vector<float> &data, int dataSize)
+	void VertexBufferObjectOpenGL::storeFloatData(std::uint32_t binding, const std::vector<float> &data, int dataSize)
 	{
 		assert(dataSize > 0);
 		m_DataSize = dataSize;
+		m_Binding = binding;
 
 		bind();
 

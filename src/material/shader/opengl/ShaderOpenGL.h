@@ -25,6 +25,8 @@ namespace Animation
 
 		void setTexture(const std::unique_ptr<Texture> &texture) override;
 
+		[[nodiscard]] glm::mat4 getProjectionMatrix() const override;
+
 	private:
 		void attachShaders() const;
 
@@ -39,6 +41,10 @@ namespace Animation
 		static GLuint loadShader(const std::string &shaderSource, GLenum type);
 
 		static void debug(GLuint shaderId);
+
+		static class RendererOpenGL *getRenderer();
+
+		static class TextureOpenGL *getTexture(const std::unique_ptr<Texture> &texture);
 	};
 }
 

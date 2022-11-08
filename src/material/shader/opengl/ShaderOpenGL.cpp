@@ -1,11 +1,13 @@
 #include <cassert>
 #include <spdlog/spdlog.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "ShaderOpenGL.h"
 #include "UniformOpenGL.h"
 #include "VertexShader.glsl.h"
 #include "FragmentShader.glsl.h"
 #include "TextureOpenGL.h"
+#include "RendererOpenGL.h"
 
 namespace Animation
 {
@@ -141,14 +143,39 @@ namespace Animation
 
 	void ShaderOpenGL::setTexture(const std::unique_ptr<Texture> &texture)
 	{
-		// TODO: move these three line to separate function
-		assert(texture);
-		auto *textureOpenGL = dynamic_cast<TextureOpenGL *>(texture.get());
-		assert(textureOpenGL);
+		TextureOpenGL *textureOpenGL = getTexture(texture);
 
 		std::unique_ptr<UniformOpenGL> uniform = std::make_unique<UniformOpenGL>(0, 1, m_Program);
 		textureOpenGL->createTexture(uniform);
 
 		m_Uniform = std::move(uniform);
+	}
+
+	glm::mat4 ShaderOpenGL::getProjectionMatrix() const
+	{
+		RendererOpenGL *renderer = getRenderer();
+
+		const float aspect = renderer->getWindowAspectRatio();
+		return glm::perspective(glm::radians(FOV), aspect, NEAR, FAR);
+	}
+
+	RendererOpenGL *ShaderOpenGL::getRenderer()
+	{
+		std::unique_ptr<Renderer> &renderer = Renderer::getRenderer();
+		assert(renderer);
+
+		auto *openGLRenderer = dynamic_cast<RendererOpenGL *>(renderer.get());
+		assert(openGLRenderer);
+
+		return openGLRenderer;
+	}
+
+	class TextureOpenGL *ShaderOpenGL::getTexture(const std::unique_ptr<Texture> &texture)
+	{
+		assert(texture);
+		auto *textureOpenGL = dynamic_cast<TextureOpenGL *>(texture.get());
+		assert(textureOpenGL);
+
+		return textureOpenGL;
 	}
 }

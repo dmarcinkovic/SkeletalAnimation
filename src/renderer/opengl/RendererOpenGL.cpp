@@ -6,6 +6,7 @@
 #include "VertexBufferObjectOpenGL.h"
 #include "ShaderOpenGL.h"
 #include "TextureOpenGL.h"
+#include "Window.h"
 
 namespace Animation
 {
@@ -28,11 +29,16 @@ namespace Animation
 			std::exit(EXIT_FAILURE);
 		}
 
+		Window::getWindow().getFramebufferSize(m_Width, m_Height);
+
 		spdlog::info("Initialized OpenGL renderer.");
 	}
 
 	void RendererOpenGL::setViewport(int width, int height)
 	{
+		m_Width = width;
+		m_Height = height;
+
 		glViewport(0, 0, width, height);
 	}
 
@@ -65,5 +71,12 @@ namespace Animation
 	std::unique_ptr<Texture> RendererOpenGL::getTexture(const std::filesystem::path &path) const
 	{
 		return std::make_unique<TextureOpenGL>(path);
+	}
+
+	float RendererOpenGL::getWindowAspectRatio() const
+	{
+		assert(m_Width > 0);
+		assert(m_Height > 0);
+		return static_cast<float>(m_Width) / static_cast<float>(m_Height);
 	}
 }

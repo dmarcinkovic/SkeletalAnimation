@@ -1,5 +1,6 @@
 #include <spdlog/spdlog.h>
 #include <cassert>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "ShaderVulkan.h"
 #include "VertexShader.spv.h"
@@ -10,6 +11,19 @@
 
 namespace
 {
+	VkDescriptorSetLayoutBinding
+	getLayoutBinding(std::uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags)
+	{
+		VkDescriptorSetLayoutBinding layoutBinding{};
+		layoutBinding.binding = binding;
+		layoutBinding.descriptorCount = 1;
+		layoutBinding.descriptorType = type;
+		layoutBinding.pImmutableSamplers = nullptr;
+		layoutBinding.stageFlags = flags;
+
+		return layoutBinding;
+	}
+
 	VkPipelineShaderStageCreateInfo createShaderInfo(VkShaderStageFlagBits stage, VkShaderModule shader)
 	{
 		VkPipelineShaderStageCreateInfo shaderInfo{};
@@ -54,7 +68,7 @@ namespace
 		rasterizerInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizerInfo.lineWidth = 1.0f;
 		rasterizerInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizerInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizerInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		rasterizerInfo.depthBiasEnable = VK_FALSE;
 
 		return rasterizerInfo;
@@ -115,6 +129,7 @@ namespace Animation
 	{
 		const LogicalDevice &device = LogicalDevice::getInstance();
 
+		createDescriptorLayout(device);
 		createPipelineLayout(device);
 		createShader(device);
 	}
@@ -124,6 +139,7 @@ namespace Animation
 		VkDevice device = LogicalDevice::getInstance().getDevice();
 		vkDestroyPipeline(device, m_GraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
+		vkDestroyDescriptorSetLayout(device, m_DescriptorSetLayout, nullptr);
 	}
 
 	void ShaderVulkan::startShader() const
@@ -139,7 +155,6 @@ namespace Animation
 
 		assert(m_Uniform);
 		m_Uniform->bind();
-		// TODO: put code inside to bind() and remove it
 		bindUniforms(commandBuffer);
 	}
 
@@ -231,10 +246,12 @@ namespace Animation
 
 	void ShaderVulkan::createPipelineLayout(const LogicalDevice &device)
 	{
+		assert(m_DescriptorSetLayout != VK_NULL_HANDLE);
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 
 		if (vkCreatePipelineLayout(device.getDevice(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
@@ -265,25 +282,27 @@ namespace Animation
 
 	std::vector<VkVertexInputBindingDescription> ShaderVulkan::getBindingDescription()
 	{
-		constexpr int numberOfBindingDescriptions = 2;
+		constexpr int numberOfBindingDescriptions = 3;
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(numberOfBindingDescriptions);
 
 		bindingDescriptions[0].binding = 0;
-		// TODO: do not hardcode this 3: This is data size from vertex object
 		bindingDescriptions[0].stride = 3 * sizeof(float);
 		bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
 		bindingDescriptions[1].binding = 1;
-		// TODO: do not hardcode this 2: This is data size from vertex object
 		bindingDescriptions[1].stride = 2 * sizeof(float);
 		bindingDescriptions[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		bindingDescriptions[2].binding = 2;
+		bindingDescriptions[2].stride = 3 * sizeof(float);
+		bindingDescriptions[2].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
 		return bindingDescriptions;
 	}
 
 	std::vector<VkVertexInputAttributeDescription> ShaderVulkan::getAttributeDescription()
 	{
-		constexpr int numberOfAttributeDescriptions = 2;
+		constexpr int numberOfAttributeDescriptions = 3;
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(numberOfAttributeDescriptions);
 
 		attributeDescriptions[0].binding = 0;
@@ -291,10 +310,15 @@ namespace Animation
 		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[0].offset = 0;
 
-		attributeDescriptions[1].binding = 0;
+		attributeDescriptions[1].binding = 1;
 		attributeDescriptions[1].location = 1;
 		attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
 		attributeDescriptions[1].offset = 0;
+
+		attributeDescriptions[2].binding = 2;
+		attributeDescriptions[2].location = 2;
+		attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[2].offset = 0;
 
 		return attributeDescriptions;
 	}
@@ -365,25 +389,85 @@ namespace Animation
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
+	VkDescriptorSetLayoutBinding ShaderVulkan::getUniformLayoutBinding()
+	{
+		return getLayoutBinding(UNIFORM_BINDING, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+	}
+
+	VkDescriptorSetLayoutBinding ShaderVulkan::getSamplerLayoutBinding()
+	{
+		VkDescriptorType type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		VkShaderStageFlags flags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return getLayoutBinding(SAMPLER_BINDING, type, flags);
+	}
+
+	void ShaderVulkan::createDescriptorLayout(const LogicalDevice &device)
+	{
+		VkDescriptorSetLayoutBinding uniformLayoutBinding = getUniformLayoutBinding();
+		VkDescriptorSetLayoutBinding samplerLayoutBinding = getSamplerLayoutBinding();
+
+		std::array<VkDescriptorSetLayoutBinding, 2> bindings{uniformLayoutBinding, samplerLayoutBinding};
+
+		VkDescriptorSetLayoutCreateInfo layout{};
+		layout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layout.bindingCount = bindings.size();
+		layout.pBindings = bindings.data();
+
+		if (vkCreateDescriptorSetLayout(device.getDevice(), &layout, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		{
+			spdlog::error("Failed to create descriptor set layout.");
+			std::exit(EXIT_FAILURE);
+		}
+
+		assert(m_DescriptorSetLayout != VK_NULL_HANDLE);
+	}
+
 	void ShaderVulkan::bindUniforms(VkCommandBuffer commandBuffer) const
 	{
-		// TODO: put this in uniform bind method
 		assert(m_Uniform);
 		const auto *uniformVulkan = dynamic_cast<UniformVulkan *>(m_Uniform.get());
 		assert(uniformVulkan);
-		uniformVulkan->bindDescriptorSet(commandBuffer);
+		uniformVulkan->bindDescriptorSet(commandBuffer, m_PipelineLayout);
 	}
 
 	void ShaderVulkan::setTexture(const std::unique_ptr<Texture> &texture)
 	{
-		// TODO: put this in separate method
+		TextureVulkan *textureVulkan = getTexture(texture);
+
+		std::unique_ptr<UniformVulkan> uniform = createUniform();
+		textureVulkan->createTexture(uniform);
+
+		m_Uniform = std::move(uniform);
+	}
+
+	glm::mat4 ShaderVulkan::getProjectionMatrix() const
+	{
+		RendererVulkan *renderer = getRenderer();
+		VkExtent2D extent = renderer->getSwapChain().getExtent();
+
+		assert(extent.width > 0);
+		assert(extent.height > 0);
+
+		const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(FOV), aspect, NEAR, FAR);
+		projectionMatrix[1][1] *= -1;
+
+		return projectionMatrix;
+	}
+
+	TextureVulkan *ShaderVulkan::getTexture(const std::unique_ptr<Texture> &texture)
+	{
 		assert(texture);
 		auto *textureVulkan = dynamic_cast<TextureVulkan *>(texture.get());
 		assert(textureVulkan);
 
-		std::unique_ptr<UniformVulkan> uniform = std::make_unique<UniformVulkan>(0, 1);
-		textureVulkan->createTexture(uniform);
+		return textureVulkan;
+	}
 
-		m_Uniform = std::move(uniform);
+	std::unique_ptr<class UniformVulkan> ShaderVulkan::createUniform() const
+	{
+		assert(m_DescriptorSetLayout);
+		return std::make_unique<UniformVulkan>(UNIFORM_BINDING, SAMPLER_BINDING, m_DescriptorSetLayout);
 	}
 }

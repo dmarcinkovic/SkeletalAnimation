@@ -26,7 +26,7 @@ namespace Animation
 	{
 		for (const auto &vertexBuffer: m_VertexBufferObjects)
 		{
-			vertexBuffer.second->bind();
+			vertexBuffer.second->unbind();
 		}
 	}
 

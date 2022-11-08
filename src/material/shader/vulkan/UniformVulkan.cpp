@@ -7,29 +7,6 @@
 
 namespace
 {
-	VkDescriptorSetLayoutBinding
-	getLayoutBinding(std::uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags)
-	{
-		VkDescriptorSetLayoutBinding layoutBinding{};
-		layoutBinding.binding = binding;
-		layoutBinding.descriptorCount = 1;
-		layoutBinding.descriptorType = type;
-		layoutBinding.pImmutableSamplers = nullptr;
-		layoutBinding.stageFlags = flags;
-
-		return layoutBinding;
-	}
-
-	VkDescriptorSetLayoutBinding getUniformLayoutBinding(std::uint32_t binding)
-	{
-		return getLayoutBinding(binding, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
-	}
-
-	VkDescriptorSetLayoutBinding getSamplerLayoutBinding(std::uint32_t binding)
-	{
-		return getLayoutBinding(binding, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
-	}
-
 	VkImageViewCreateInfo getImageViewInfo(VkImage image)
 	{
 		// TODO: this is already in image view class: reuse
@@ -70,20 +47,18 @@ namespace
 
 namespace Animation
 {
-	UniformVulkan::UniformVulkan(std::uint32_t uniformBinding, std::uint32_t samplerBinding)
-			: Uniform(uniformBinding, samplerBinding)
+	UniformVulkan::UniformVulkan(std::uint32_t uniform, std::uint32_t sampler, VkDescriptorSetLayout layout)
+			: Uniform(uniform, sampler)
 	{
 		m_Device = LogicalDevice::getInstance().getDevice();
 
-		createDescriptorLayout();
 		createUniformBuffers();
 		createDescriptorPool();
-		createDescriptorSets();
+		createDescriptorSets(layout);
 	}
 
 	UniformVulkan::~UniformVulkan()
 	{
-		vkDestroyDescriptorSetLayout(m_Device, m_DescriptorSetLayout, nullptr);
 		vkDestroyDescriptorPool(m_Device, m_DescriptorPool, nullptr);
 
 		vkDestroySampler(m_Device, m_TextureSampler, nullptr);
@@ -92,20 +67,17 @@ namespace Animation
 
 	void UniformVulkan::bind() const
 	{
-
 	}
 
-	void UniformVulkan::update()
+	void UniformVulkan::update(const UniformData &uniformData)
 	{
-		glm::vec4 uniformData{0.4f, 0.4f, 1.0f, 1.0f};
-
 		assert(m_CurrentFrame < m_UniformBuffers.size());
 		assert(m_UniformBuffers[m_CurrentFrame]);
 		VkDeviceMemory memory = m_UniformBuffers[m_CurrentFrame]->getBufferMemory();
 
 		void *data;
-		vkMapMemory(m_Device, memory, 0, sizeof(uniformData), 0, &data);
-		std::memcpy(data, &uniformData, sizeof(uniformData));
+		vkMapMemory(m_Device, memory, 0, sizeof(UniformData), 0, &data);
+		std::memcpy(data, &uniformData, sizeof(UniformData));
 		vkUnmapMemory(m_Device, memory);
 
 		++m_CurrentFrame;
@@ -117,30 +89,9 @@ namespace Animation
 
 	}
 
-	void UniformVulkan::createDescriptorLayout()
-	{
-		VkDescriptorSetLayoutBinding uniformLayoutBinding = getUniformLayoutBinding(m_UniformBinding);
-		VkDescriptorSetLayoutBinding samplerLayoutBinding = getSamplerLayoutBinding(m_SamplerBinding);
-
-		std::array<VkDescriptorSetLayoutBinding, 2> bindings{uniformLayoutBinding, samplerLayoutBinding};
-
-		VkDescriptorSetLayoutCreateInfo layout{};
-		layout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layout.bindingCount = bindings.size();
-		layout.pBindings = bindings.data();
-
-		if (vkCreateDescriptorSetLayout(m_Device, &layout, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
-		{
-			spdlog::error("Failed to create descriptor set layout.");
-			std::exit(EXIT_FAILURE);
-		}
-
-		assert(m_DescriptorSetLayout != VK_NULL_HANDLE);
-	}
-
 	void UniformVulkan::createUniformBuffers()
 	{
-		VkDeviceSize bufferSize = sizeof(glm::vec4);
+		VkDeviceSize bufferSize = sizeof(UniformData);
 
 		const int numberOfUniformBuffers = CommandPool::size();
 		for (int i = 0; i < numberOfUniformBuffers; ++i)
@@ -182,10 +133,10 @@ namespace Animation
 		return poolSize;
 	}
 
-	void UniformVulkan::createDescriptorSets()
+	void UniformVulkan::createDescriptorSets(VkDescriptorSetLayout descriptorSetLayout)
 	{
 		const int numberOfUniformBuffers = CommandPool::size();
-		std::vector<VkDescriptorSetLayout> layouts(numberOfUniformBuffers, m_DescriptorSetLayout);
+		std::vector<VkDescriptorSetLayout> layouts(numberOfUniformBuffers, descriptorSetLayout);
 
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -197,13 +148,14 @@ namespace Animation
 		allocateDescriptorSets(allocInfo);
 	}
 
-	void UniformVulkan::bindDescriptorSet(VkCommandBuffer commandBuffer) const
+	void UniformVulkan::bindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const
 	{
 		VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
 		assert(m_CurrentFrame < m_DescriptorSets.size());
 		VkDescriptorSet descriptorSet = m_DescriptorSets[m_CurrentFrame];
-		vkCmdBindDescriptorSets(commandBuffer, bindPoint, VK_NULL_HANDLE, 0, 1, &descriptorSet, 0, nullptr);
+		assert(pipelineLayout != VK_NULL_HANDLE);
+		vkCmdBindDescriptorSets(commandBuffer, bindPoint, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 	}
 
 	void UniformVulkan::updateDescriptorSets()
@@ -216,8 +168,7 @@ namespace Animation
 			VkDescriptorBufferInfo uniformInfo{};
 			uniformInfo.buffer = m_UniformBuffers[i]->getBuffer();
 			uniformInfo.offset = 0;
-			// TODO: change
-			uniformInfo.range = sizeof(glm::vec4);
+			uniformInfo.range = sizeof(UniformData);
 
 			// TODO: move this to separate method
 			VkDescriptorImageInfo samplerInfo{};

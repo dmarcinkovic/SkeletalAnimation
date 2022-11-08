@@ -17,7 +17,7 @@ namespace Animation
 		assert(offsets.size() == 1);
 
 		VkCommandBuffer commandBuffer = VulkanBuffer::getCurrentCommandBuffer();
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers.data(), offsets.data());
+		vkCmdBindVertexBuffers(commandBuffer, m_Binding, 1, vertexBuffers.data(), offsets.data());
 	}
 
 	void VertexBufferObjectVulkan::unbind() const
@@ -25,11 +25,12 @@ namespace Animation
 
 	}
 
-	void VertexBufferObjectVulkan::storeFloatData(const std::vector<float> &data, int dataSize)
+	void VertexBufferObjectVulkan::storeFloatData(std::uint32_t binding, const std::vector<float> &data, int dataSize)
 	{
 		m_DataSize = dataSize;
-		VkDevice device = LogicalDevice::getInstance().getDevice();
+		m_Binding = binding;
 
+		VkDevice device = LogicalDevice::getInstance().getDevice();
 		VkDeviceSize bufferSize = sizeof(float) * data.size();
 
 		createVertexBuffer(bufferSize);

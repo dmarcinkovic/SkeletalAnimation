@@ -20,12 +20,12 @@ namespace Animation
 
 		ImageView(const ImageView &imageView);
 
-		VkImageView getView() const;
+		[[nodiscard]] VkImageView getView() const;
+
+		static VkImageViewCreateInfo getImageViewInfo(VkFormat format, VkImage image);
 
 	private:
 		void createImageView(const VkImageViewCreateInfo &imageViewInfo);
-
-		static VkImageViewCreateInfo getImageViewInfo(VkFormat format, VkImage image);
 	};
 }
 

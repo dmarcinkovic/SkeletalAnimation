@@ -19,7 +19,7 @@ namespace Animation
 
 		void bind() const override;
 
-		void update() override;
+		void update(const UniformData &uniformData) override;
 
 		void unbind() const override;
 
