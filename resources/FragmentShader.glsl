@@ -8,6 +8,8 @@ layout (location = 2) flat in vec4 lightColor;
 layout (location = 3) flat in vec3 cameraPosition;
 layout (location = 4) flat in vec3 lightPosition;
 layout (location = 5) in vec3 worldPosition;
+layout (location = 6) flat in float shininess;
+layout (location = 7) flat in float specularStrength;
 
 layout(location = 0) out vec4 outColor;
 
@@ -24,10 +26,8 @@ void main()
 
     vec3 toCameraVector = normalize(cameraPosition - worldPosition);
     vec3 reflectedVector = reflect(-lightDirection, normal);
-    // TODO: pass this 32 as uniform and store it in material class
-    float specularFactor = pow(max(dot(reflectedVector, toCameraVector), 0.0f), 32);
-    // TODO: pass this 0.5f as an uniform and store it in material class
-    vec3 specular = 0.5f * specularFactor * lightColor.rgb;
+    float specularFactor = pow(max(dot(reflectedVector, toCameraVector), 0.0f), shininess);
+    vec3 specular = specularStrength * specularFactor * lightColor.rgb;
 
     vec3 objectColor = texture(texSampler, textureCoordinates).rgb;
     vec3 resultColor = (ambient + diffuse + specular) * objectColor;

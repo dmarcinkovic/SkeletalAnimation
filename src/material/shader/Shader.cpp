@@ -28,6 +28,8 @@ namespace Animation
 		uniformData.cameraPosition = cameraPosition;
 		uniformData.lightPosition = lightPosition;
 		uniformData.lightColor = lightColor;
+		uniformData.shininess = shininess;
+		uniformData.specularStrength = specularStrength;
 
 		m_Uniform->update(uniformData);
 	}
