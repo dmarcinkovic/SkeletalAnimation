@@ -48,7 +48,6 @@ namespace Animation
 
 	void TextureVulkan::createTexture(const std::unique_ptr<UniformVulkan> &uniform)
 	{
-		// TODO: move to separate methods
 		VkDeviceSize imageSize = m_Width * m_Height * 4;
 		VulkanBuffer stagingBuffer = getStagingBuffer(imageSize);
 
@@ -59,15 +58,9 @@ namespace Animation
 
 		createImage();
 		allocateImageMemory();
+		prepareImage(stagingBuffer.getBuffer());
 
-		transitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		copyBufferToImage(stagingBuffer.getBuffer());
-		transitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
-		// TODO:make this three one function
-		uniform->createTextureImageView(m_TextureImage);
-		uniform->createTextureSampler();
-		uniform->updateDescriptorSets();
+		createTextureSampler(uniform);
 	}
 
 	TextureVulkan::~TextureVulkan()
@@ -144,7 +137,6 @@ namespace Animation
 
 	void TextureVulkan::transitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout)
 	{
-		// TODO: repeating code
 		const LogicalDevice &device = LogicalDevice::getInstance();
 		VkCommandPool commandPool = VulkanBuffer::getCommandPool();
 
@@ -154,30 +146,23 @@ namespace Animation
 		VkPipelineStageFlags sourceStage;
 		VkPipelineStageFlags destinationStage;
 
-		// TODO: refactor
-		if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+		if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED)
 		{
 			barrier.srcAccessMask = 0;
 			barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
 			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-		} else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL &&
-				   newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+		} else
 		{
 			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
 			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-		} else
-		{
-			spdlog::error("Unsupported layout transition.");
-			std::exit(EXIT_FAILURE);
 		}
 
 		vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-
 		VulkanBuffer::endCommand(device, commandPool, commandBuffer);
 	}
 
@@ -196,5 +181,19 @@ namespace Animation
 		vkCmdCopyBufferToImage(commandBuffer, buffer, m_TextureImage, imageLayout, 1, &imageCopy);
 
 		VulkanBuffer::endCommand(device, commandPool, commandBuffer);
+	}
+
+	void TextureVulkan::createTextureSampler(const std::unique_ptr<UniformVulkan> &uniform)
+	{
+		uniform->createTextureImageView(m_TextureImage);
+		uniform->createTextureSampler();
+		uniform->updateDescriptorSets();
+	}
+
+	void TextureVulkan::prepareImage(VkBuffer buffer)
+	{
+		transitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		copyBufferToImage(buffer);
+		transitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 }

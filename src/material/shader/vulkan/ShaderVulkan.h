@@ -50,10 +50,6 @@ namespace Animation
 
 		static const RenderPass &getRenderPass();
 
-		static VkDescriptorSetLayoutBinding getUniformLayoutBinding();
-
-		static VkDescriptorSetLayoutBinding getSamplerLayoutBinding();
-
 		static void beginCommandBuffer(VkCommandBuffer commandBuffer);
 
 		static void beginRenderPass(const class RendererVulkan *renderer, VkCommandBuffer commandBuffer);

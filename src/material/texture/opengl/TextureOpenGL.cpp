@@ -2,8 +2,6 @@
 
 namespace Animation
 {
-	// TODO: do not hardcode this values: pass program id as an argument
-	// TODO: store binding as a constant in Shader.h
 	TextureOpenGL::TextureOpenGL(const std::filesystem::path &path)
 			: Texture(path)
 	{

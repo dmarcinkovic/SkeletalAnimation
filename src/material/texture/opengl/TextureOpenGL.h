@@ -13,7 +13,6 @@ namespace Animation
 	public:
 		explicit TextureOpenGL(const std::filesystem::path &path);
 
-		// TODO: make make this function virtual: check after you do vulkan
 		void createTexture(const std::unique_ptr<UniformOpenGL> &uniform);
 
 	private:

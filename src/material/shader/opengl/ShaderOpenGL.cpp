@@ -145,7 +145,7 @@ namespace Animation
 	{
 		TextureOpenGL *textureOpenGL = getTexture(texture);
 
-		std::unique_ptr<UniformOpenGL> uniform = std::make_unique<UniformOpenGL>(0, 1, m_Program);
+		std::unique_ptr<UniformOpenGL> uniform = std::make_unique<UniformOpenGL>(m_Program);
 		textureOpenGL->createTexture(uniform);
 
 		m_Uniform = std::move(uniform);

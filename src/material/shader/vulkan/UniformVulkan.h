@@ -25,7 +25,7 @@ namespace Animation
 		std::uint32_t m_CurrentFrame{};
 
 	public:
-		UniformVulkan(std::uint32_t uniformBinding, std::uint32_t samplerBinding, VkDescriptorSetLayout layout);
+		explicit UniformVulkan(VkDescriptorSetLayout layout);
 
 		~UniformVulkan() override;
 
@@ -38,6 +38,10 @@ namespace Animation
 		void unbind() const override;
 
 		void bindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const;
+
+		static VkDescriptorSetLayoutBinding getSamplerLayoutBinding();
+
+		static VkDescriptorSetLayoutBinding getUniformLayoutBinding();
 
 	private:
 		void createUniformBuffers();

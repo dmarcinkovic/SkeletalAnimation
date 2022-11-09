@@ -36,6 +36,10 @@ namespace Animation
 		void transitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 
 		void copyBufferToImage(VkBuffer buffer);
+
+		void createTextureSampler(const std::unique_ptr<UniformVulkan> &uniform);
+
+		void prepareImage(VkBuffer buffer);
 	};
 }
 

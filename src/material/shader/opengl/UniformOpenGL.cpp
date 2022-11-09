@@ -5,8 +5,7 @@
 
 namespace Animation
 {
-	UniformOpenGL::UniformOpenGL(std::uint32_t uniformBinding, std::uint32_t samplerBinding, GLuint programId)
-			: Uniform(uniformBinding, samplerBinding)
+	UniformOpenGL::UniformOpenGL(GLuint programId)
 	{
 		assert(programId > 0);
 		createBuffer();
@@ -47,7 +46,7 @@ namespace Animation
 		assert(m_UniformId > 0);
 	}
 
-	void UniformOpenGL::allocateBuffer(GLuint programId)
+	void UniformOpenGL::allocateBuffer(GLuint programId) const
 	{
 		bind();
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformData), nullptr, GL_STATIC_DRAW);
@@ -55,8 +54,8 @@ namespace Animation
 		GLuint uniformIndex = glGetUniformBlockIndex(programId, "UniformBufferObject");
 		assert(uniformIndex != GL_INVALID_INDEX);
 
-		glUniformBlockBinding(programId, uniformIndex, m_UniformBinding);
-		glBindBufferRange(GL_UNIFORM_BUFFER, m_UniformBinding, m_UniformId, 0, sizeof(UniformData));
+		glUniformBlockBinding(programId, uniformIndex, UNIFORM_BINDING);
+		glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING, m_UniformId, 0, sizeof(UniformData));
 
 		unbind();
 	}

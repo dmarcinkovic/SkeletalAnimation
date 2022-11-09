@@ -9,8 +9,8 @@ namespace Animation
 	class Uniform
 	{
 	protected:
-		std::uint32_t m_UniformBinding;
-		std::uint32_t m_SamplerBinding;
+		static constexpr std::uint32_t UNIFORM_BINDING = 0;
+		static constexpr std::uint32_t SAMPLER_BINDING = 1;
 
 	public:
 		struct UniformData
@@ -22,8 +22,6 @@ namespace Animation
 			alignas(16) glm::vec3 cameraPosition;
 			alignas(16) glm::vec3 lightPosition;
 		};
-
-		explicit Uniform(std::uint32_t uniformBinding, std::uint32_t samplerBinding);
 
 		virtual ~Uniform() = default;
 

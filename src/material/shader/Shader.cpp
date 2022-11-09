@@ -6,7 +6,7 @@
 
 namespace Animation
 {
-	void Shader::update()
+	void Shader::update(float shininess, float specularStrength)
 	{
 		assert(m_Uniform);
 

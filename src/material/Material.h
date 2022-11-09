@@ -11,6 +11,9 @@ namespace Animation
 	class Material final
 	{
 	private:
+		float m_Shininess{32.0f};
+		float m_SpecularStrength{0.5f};
+
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Texture> m_Texture;
 

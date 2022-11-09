@@ -11,19 +11,6 @@
 
 namespace
 {
-	VkDescriptorSetLayoutBinding
-	getLayoutBinding(std::uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags)
-	{
-		VkDescriptorSetLayoutBinding layoutBinding{};
-		layoutBinding.binding = binding;
-		layoutBinding.descriptorCount = 1;
-		layoutBinding.descriptorType = type;
-		layoutBinding.pImmutableSamplers = nullptr;
-		layoutBinding.stageFlags = flags;
-
-		return layoutBinding;
-	}
-
 	VkPipelineShaderStageCreateInfo createShaderInfo(VkShaderStageFlagBits stage, VkShaderModule shader)
 	{
 		VkPipelineShaderStageCreateInfo shaderInfo{};
@@ -389,23 +376,10 @@ namespace Animation
 		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 	}
 
-	VkDescriptorSetLayoutBinding ShaderVulkan::getUniformLayoutBinding()
-	{
-		return getLayoutBinding(UNIFORM_BINDING, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
-	}
-
-	VkDescriptorSetLayoutBinding ShaderVulkan::getSamplerLayoutBinding()
-	{
-		VkDescriptorType type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		VkShaderStageFlags flags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-		return getLayoutBinding(SAMPLER_BINDING, type, flags);
-	}
-
 	void ShaderVulkan::createDescriptorLayout(const LogicalDevice &device)
 	{
-		VkDescriptorSetLayoutBinding uniformLayoutBinding = getUniformLayoutBinding();
-		VkDescriptorSetLayoutBinding samplerLayoutBinding = getSamplerLayoutBinding();
+		VkDescriptorSetLayoutBinding uniformLayoutBinding = UniformVulkan::getUniformLayoutBinding();
+		VkDescriptorSetLayoutBinding samplerLayoutBinding = UniformVulkan::getSamplerLayoutBinding();
 
 		std::array<VkDescriptorSetLayoutBinding, 2> bindings{uniformLayoutBinding, samplerLayoutBinding};
 
@@ -468,6 +442,6 @@ namespace Animation
 	std::unique_ptr<class UniformVulkan> ShaderVulkan::createUniform() const
 	{
 		assert(m_DescriptorSetLayout);
-		return std::make_unique<UniformVulkan>(UNIFORM_BINDING, SAMPLER_BINDING, m_DescriptorSetLayout);
+		return std::make_unique<UniformVulkan>(m_DescriptorSetLayout);
 	}
 }

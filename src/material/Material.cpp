@@ -11,8 +11,6 @@ namespace Animation
 		assert(m_Texture);
 
 		m_Shader->setTexture(m_Texture);
-		// TODO: here you will add uniform: you know the texture size:
-		// TODO: texture is loaded
 	}
 
 	void Material::start() const
@@ -22,7 +20,7 @@ namespace Animation
 
 	void Material::update() const
 	{
-		m_Shader->update();
+		m_Shader->update(m_Shininess, m_SpecularStrength);
 	}
 
 	void Material::end() const

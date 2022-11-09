@@ -17,9 +17,6 @@ namespace Animation
 		static constexpr float NEAR = 0.1f;
 		static constexpr float FAR = 100.0f;
 
-		static constexpr int UNIFORM_BINDING = 0;
-		static constexpr int SAMPLER_BINDING = 1;
-
 		std::unique_ptr<Uniform> m_Uniform;
 
 	public:
@@ -31,9 +28,9 @@ namespace Animation
 
 		virtual void setTexture(const std::unique_ptr<Texture> &texture) = 0;
 
-		virtual glm::mat4 getProjectionMatrix() const = 0;
+		[[nodiscard]] virtual glm::mat4 getProjectionMatrix() const = 0;
 
-		void update();
+		void update(float shininess, float specularStrength);
 	};
 }
 

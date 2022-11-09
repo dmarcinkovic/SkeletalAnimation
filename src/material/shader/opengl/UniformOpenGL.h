@@ -13,7 +13,7 @@ namespace Animation
 		GLint m_TextureLocation{};
 
 	public:
-		UniformOpenGL(std::uint32_t uniformBinding, std::uint32_t samplerBinding, GLuint programId);
+		explicit UniformOpenGL(GLuint programId);
 
 		~UniformOpenGL() override = default;
 
@@ -30,7 +30,7 @@ namespace Animation
 	private:
 		void createBuffer();
 
-		void allocateBuffer(GLuint programId);
+		void allocateBuffer(GLuint programId) const;
 
 		void createSampler(GLuint programId);
 	};

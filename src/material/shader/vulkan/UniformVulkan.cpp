@@ -4,24 +4,21 @@
 #include "UniformVulkan.h"
 #include "LogicalDevice.h"
 #include "CommandPool.h"
+#include "ImageView.h"
 
 namespace
 {
-	VkImageViewCreateInfo getImageViewInfo(VkImage image)
+	VkDescriptorSetLayoutBinding
+	getLayoutBinding(std::uint32_t binding, VkDescriptorType type, VkShaderStageFlags flags)
 	{
-		// TODO: this is already in image view class: reuse
-		VkImageViewCreateInfo imageViewInfo{};
-		imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		imageViewInfo.image = image;
-		imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		imageViewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-		imageViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		imageViewInfo.subresourceRange.baseMipLevel = 0;
-		imageViewInfo.subresourceRange.levelCount = 1;
-		imageViewInfo.subresourceRange.baseArrayLayer = 0;
-		imageViewInfo.subresourceRange.layerCount = 1;
+		VkDescriptorSetLayoutBinding layoutBinding{};
+		layoutBinding.binding = binding;
+		layoutBinding.descriptorCount = 1;
+		layoutBinding.descriptorType = type;
+		layoutBinding.pImmutableSamplers = nullptr;
+		layoutBinding.stageFlags = flags;
 
-		return imageViewInfo;
+		return layoutBinding;
 	}
 
 	VkSamplerCreateInfo getSamplerInfo(VkPhysicalDeviceProperties properties)
@@ -47,8 +44,7 @@ namespace
 
 namespace Animation
 {
-	UniformVulkan::UniformVulkan(std::uint32_t uniform, std::uint32_t sampler, VkDescriptorSetLayout layout)
-			: Uniform(uniform, sampler)
+	UniformVulkan::UniformVulkan(VkDescriptorSetLayout layout)
 	{
 		m_Device = LogicalDevice::getInstance().getDevice();
 
@@ -170,7 +166,6 @@ namespace Animation
 			uniformInfo.offset = 0;
 			uniformInfo.range = sizeof(UniformData);
 
-			// TODO: move this to separate method
 			VkDescriptorImageInfo samplerInfo{};
 			samplerInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			samplerInfo.imageView = m_TextureImageView;
@@ -211,7 +206,7 @@ namespace Animation
 
 	void UniformVulkan::createTextureImageView(VkImage textureImage)
 	{
-		VkImageViewCreateInfo imageViewInfo = getImageViewInfo(textureImage);
+		VkImageViewCreateInfo imageViewInfo = ImageView::getImageViewInfo(VK_FORMAT_R8G8B8A8_SRGB, textureImage);
 
 		if (vkCreateImageView(m_Device, &imageViewInfo, nullptr, &m_TextureImageView) != VK_SUCCESS)
 		{
@@ -237,5 +232,18 @@ namespace Animation
 		}
 
 		assert(m_TextureSampler != VK_NULL_HANDLE);
+	}
+
+	VkDescriptorSetLayoutBinding UniformVulkan::getSamplerLayoutBinding()
+	{
+		VkDescriptorType type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		VkShaderStageFlags flags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return getLayoutBinding(SAMPLER_BINDING, type, flags);
+	}
+
+	VkDescriptorSetLayoutBinding UniformVulkan::getUniformLayoutBinding()
+	{
+		return getLayoutBinding(UNIFORM_BINDING, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
 	}
 }
