@@ -14,6 +14,7 @@
 #include "Framebuffers.h"
 #include "CommandPool.h"
 #include "SyncObjects.h"
+#include "DepthTexture.h"
 
 namespace Animation
 {
@@ -25,9 +26,10 @@ namespace Animation
 		SwapChain m_SwapChain;
 		ImageViews m_ImageViews;
 		RenderPass m_RenderPass;
-		Framebuffers m_Framebuffers;
-
 		CommandPool m_CommandPool;
+
+		DepthTexture m_DepthTexture;
+		Framebuffers m_Framebuffers;
 		SyncObjects m_SyncObjects;
 
 		VkClearValue m_Color{};

@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include "TextureVulkan.h"
+#include "VulkanImage.h"
 
 namespace
 {
@@ -57,7 +58,7 @@ namespace Animation
 		vkUnmapMemory(m_Device, stagingBuffer.getBufferMemory());
 
 		createImage();
-		allocateImageMemory();
+		m_TextureImageMemory = VulkanImage::allocateImageMemory(m_TextureImage, m_Device);
 		prepareImage(stagingBuffer.getBuffer());
 
 		createTextureSampler(uniform);
@@ -77,62 +78,15 @@ namespace Animation
 		return {size, usage, properties};
 	}
 
-	VkImageCreateInfo TextureVulkan::getImageInfo() const
-	{
-		VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
-		VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
-		VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = static_cast<std::uint32_t>(m_Width);
-		imageInfo.extent.height = static_cast<std::uint32_t>(m_Height);
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.format = format;
-		imageInfo.tiling = tiling;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.usage = usage;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		return imageInfo;
-	}
-
 	void TextureVulkan::createImage()
 	{
-		VkImageCreateInfo imageInfo = getImageInfo();
+		VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
+		VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
-		if (vkCreateImage(m_Device, &imageInfo, nullptr, &m_TextureImage) != VK_SUCCESS)
-		{
-			spdlog::error("Failed to create image.");
-			std::exit(EXIT_FAILURE);
-		}
+		auto width = static_cast<std::uint32_t>(m_Width);
+		auto height = static_cast<std::uint32_t>(m_Height);
 
-		assert(m_TextureImage != VK_NULL_HANDLE);
-	}
-
-	void TextureVulkan::allocateImageMemory()
-	{
-		VkMemoryRequirements memoryRequirements;
-		vkGetImageMemoryRequirements(m_Device, m_TextureImage, &memoryRequirements);
-
-		VkMemoryAllocateInfo allocateInfo{};
-		allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		allocateInfo.allocationSize = memoryRequirements.size;
-
-		VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-		allocateInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memoryRequirements.memoryTypeBits, properties);
-
-		if (vkAllocateMemory(m_Device, &allocateInfo, nullptr, &m_TextureImageMemory) != VK_SUCCESS)
-		{
-			spdlog::error("Failed to allocate image memory.");
-			std::exit(EXIT_FAILURE);
-		}
-		assert(m_TextureImageMemory != VK_NULL_HANDLE);
-		vkBindImageMemory(m_Device, m_TextureImage, m_TextureImageMemory, 0);
+		m_TextureImage = VulkanImage::createImage(width, height, format, usage, m_Device);
 	}
 
 	void TextureVulkan::transitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout)

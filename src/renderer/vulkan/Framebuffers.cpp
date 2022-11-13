@@ -4,10 +4,11 @@
 
 namespace Animation
 {
-	Framebuffers::Framebuffers(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images)
+	Framebuffers::Framebuffers(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+							   const ImageViews &images, VkImageView depthView)
 	{
 		assert(device != VK_NULL_HANDLE);
-		create(device, renderPass, extent, images);
+		create(device, renderPass, extent, images, depthView);
 	}
 
 	std::size_t Framebuffers::size() const
@@ -21,18 +22,20 @@ namespace Animation
 		return m_Framebuffers[index];
 	}
 
-	void Framebuffers::recreate(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images)
+	void Framebuffers::recreate(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+								const ImageViews &images, VkImageView depthView)
 	{
 		m_Framebuffers.clear();
-		create(device, renderPass, extent, images);
+		create(device, renderPass, extent, images, depthView);
 	}
 
-	void Framebuffers::create(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images)
+	void Framebuffers::create(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+							  const ImageViews &images, VkImageView depthView)
 	{
 		m_Framebuffers.reserve(images.size());
 		for (int i = 0; i < images.size(); ++i)
 		{
-			m_Framebuffers.emplace_back(device, images[i].getView(), renderPass, extent);
+			m_Framebuffers.emplace_back(device, images[i].getView(), renderPass, extent, depthView);
 		}
 	}
 }

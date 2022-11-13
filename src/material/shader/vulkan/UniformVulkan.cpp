@@ -206,7 +206,9 @@ namespace Animation
 
 	void UniformVulkan::createTextureImageView(VkImage textureImage)
 	{
-		VkImageViewCreateInfo imageViewInfo = ImageView::getImageViewInfo(VK_FORMAT_R8G8B8A8_SRGB, textureImage);
+		VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
+		VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+		VkImageViewCreateInfo imageViewInfo = ImageView::getImageViewInfo(format, textureImage, aspectFlags);
 
 		if (vkCreateImageView(m_Device, &imageViewInfo, nullptr, &m_TextureImageView) != VK_SUCCESS)
 		{

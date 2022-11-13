@@ -15,25 +15,38 @@ int main()
 	std::vector<float> vertices{
 			-0.5f, -0.5f, 0.0f,
 			0.5f, -0.5f, 0.0f,
+			0.5f, 0.5f, 0.0f,
 			-0.5f, 0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f
+			-0.5f, -0.5f, -0.5f,
+			0.5f, -0.5f, -0.5f,
+			0.5f, 0.5f, -0.5f,
+			-0.5f, 0.5f, -0.5f
 	};
 
 	std::vector<float> textureCoordinates{
 			0.0f, 0.0f,
 			1.0f, 0.0f,
+			1.0f, 1.0f,
 			0.0f, 1.0f,
-			1.0f, 1.0f
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f
 	};
 
 	std::vector<float> normals{
-			1.0f, 1.0, 0.0f,
+			1.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 1.0f
+			0.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 1.0f
 	};
 
-	std::vector<std::uint32_t> indices{0, 1, 2, 1, 3, 2};
+	std::vector<std::uint32_t> indices{0, 1, 2, 2, 3, 0,
+									   4, 5, 6, 6, 7, 4};
 
 	std::filesystem::path texturePath("/home/david/CLionProjects/OpenGLLibrary/res/texture.jpg");
 	auto shader = renderer->getShader();

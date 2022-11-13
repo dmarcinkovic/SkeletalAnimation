@@ -12,7 +12,7 @@ namespace Animation
 		VkDevice m_LogicalDevice;
 
 	public:
-		RenderPass(VkDevice device, VkFormat swapChainFormat);
+		RenderPass(VkPhysicalDevice physicalDevice, VkDevice device, VkFormat swapChainFormat);
 
 		~RenderPass();
 
@@ -21,14 +21,6 @@ namespace Animation
 		[[nodiscard]] VkRenderPass getRenderPass() const;
 
 	private:
-		static VkAttachmentDescription getColorAttachmentDescription(VkFormat swapChainFormat);
-
-		static VkAttachmentReference getAttachmentReference();
-
-		static VkSubpassDescription getSubPassDescription(VkAttachmentReference &attachmentReference);
-
-		static VkSubpassDependency getSubPassDependency();
-
 		void createRenderPass(const VkRenderPassCreateInfo &renderPassInfo);
 	};
 }

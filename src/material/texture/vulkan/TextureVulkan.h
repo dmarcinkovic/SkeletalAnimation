@@ -29,10 +29,6 @@ namespace Animation
 
 		void createImage();
 
-		[[nodiscard]] VkImageCreateInfo getImageInfo() const;
-
-		void allocateImageMemory();
-
 		void transitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 
 		void copyBufferToImage(VkBuffer buffer);

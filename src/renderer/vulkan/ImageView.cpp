@@ -10,7 +10,7 @@ namespace Animation
 	{
 		assert(m_Device != VK_NULL_HANDLE);
 
-		VkImageViewCreateInfo imageViewInfo = getImageViewInfo(format, image);
+		VkImageViewCreateInfo imageViewInfo = getImageViewInfo(format, image, VK_IMAGE_ASPECT_COLOR_BIT);
 		createImageView(imageViewInfo);
 	}
 
@@ -26,7 +26,7 @@ namespace Animation
 	{
 		assert(m_Device != VK_NULL_HANDLE);
 
-		VkImageViewCreateInfo imageViewInfo = getImageViewInfo(m_Format, m_Image);
+		VkImageViewCreateInfo imageViewInfo = getImageViewInfo(m_Format, m_Image, VK_IMAGE_ASPECT_COLOR_BIT);
 		createImageView(imageViewInfo);
 	}
 
@@ -41,7 +41,7 @@ namespace Animation
 		assert(m_ImageView != VK_NULL_HANDLE);
 	}
 
-	VkImageViewCreateInfo ImageView::getImageViewInfo(VkFormat format, VkImage image)
+	VkImageViewCreateInfo ImageView::getImageViewInfo(VkFormat format, VkImage image, VkImageAspectFlags aspectFlags)
 	{
 		VkImageViewCreateInfo imageViewInfo{};
 
@@ -53,7 +53,7 @@ namespace Animation
 		imageViewInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 		imageViewInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
 		imageViewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-		imageViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageViewInfo.subresourceRange.aspectMask = aspectFlags;
 		imageViewInfo.subresourceRange.baseMipLevel = 0;
 		imageViewInfo.subresourceRange.levelCount = 1;
 		imageViewInfo.subresourceRange.baseArrayLayer = 0;

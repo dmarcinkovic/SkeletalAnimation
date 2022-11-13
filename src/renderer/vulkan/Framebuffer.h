@@ -14,15 +14,17 @@ namespace Animation
 		VkImageView m_ImageView;
 		VkRenderPass m_RenderPass;
 		VkExtent2D m_Extent;
+		VkImageView m_DepthView;
 
 	public:
-		Framebuffer(VkDevice logicalDevice, VkImageView imageView, VkRenderPass renderPass, VkExtent2D extent);
+		Framebuffer(VkDevice logicalDevice, VkImageView imageView, VkRenderPass renderPass,
+					VkExtent2D extent, VkImageView depthView);
 
 		~Framebuffer();
 
 		Framebuffer(const Framebuffer &framebuffer);
 
-		VkFramebuffer getFramebuffer() const;
+		[[nodiscard]] VkFramebuffer getFramebuffer() const;
 
 	private:
 		void createFramebuffer(const VkFramebufferCreateInfo &framebufferInfo);

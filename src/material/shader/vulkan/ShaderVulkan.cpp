@@ -34,6 +34,19 @@ namespace
 		return inputAssemblyInfo;
 	}
 
+	VkPipelineDepthStencilStateCreateInfo getDepthStencilInfo()
+	{
+		VkPipelineDepthStencilStateCreateInfo depthStencil{};
+		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		depthStencil.depthTestEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+		depthStencil.depthBoundsTestEnable = VK_FALSE;
+		depthStencil.stencilTestEnable = VK_FALSE;
+
+		return depthStencil;
+	}
+
 	VkPipelineViewportStateCreateInfo getViewportStateInfo()
 	{
 		VkPipelineViewportStateCreateInfo viewportStateInfo{};
@@ -174,6 +187,7 @@ namespace Animation
 		VkPipelineViewportStateCreateInfo viewportState = getViewportStateInfo();
 		VkPipelineRasterizationStateCreateInfo rasterizerInfo = getRasterizerInfo();
 		VkPipelineMultisampleStateCreateInfo multisamplingInfo = getMultisamplingInfo();
+		VkPipelineDepthStencilStateCreateInfo depthStencilInfo = getDepthStencilInfo();
 
 		VkPipelineColorBlendStateCreateInfo colorBlendInfo = getColorBlendInfo();
 		VkPipelineColorBlendAttachmentState blendAttachmentState = getBlendAttachmentState();
@@ -207,6 +221,7 @@ namespace Animation
 		pipelineInfo.pRasterizationState = &rasterizerInfo;
 		pipelineInfo.pMultisampleState = &multisamplingInfo;
 		pipelineInfo.pColorBlendState = &colorBlendInfo;
+		pipelineInfo.pDepthStencilState = &depthStencilInfo;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = m_PipelineLayout;
 		pipelineInfo.renderPass = renderPass.getRenderPass();
@@ -340,6 +355,8 @@ namespace Animation
 	void ShaderVulkan::beginRenderPass(const RendererVulkan *renderer, VkCommandBuffer commandBuffer)
 	{
 		VkClearValue clearColor = renderer->getClearColor();
+		VkClearValue depthStencil = {1.0f, 0};
+		std::array<VkClearValue, 2> clearValues{clearColor, depthStencil};
 		VkRenderPassBeginInfo renderPassInfo{};
 
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -347,8 +364,8 @@ namespace Animation
 		renderPassInfo.framebuffer = renderer->getCurrentFramebuffer().getFramebuffer();
 		renderPassInfo.renderArea.offset = {0, 0};
 		renderPassInfo.renderArea.extent = renderer->getSwapChain().getExtent();
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
+		renderPassInfo.clearValueCount = clearValues.size();
+		renderPassInfo.pClearValues = clearValues.data();
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}

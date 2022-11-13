@@ -22,7 +22,7 @@ namespace Animation
 
 		[[nodiscard]] VkImageView getView() const;
 
-		static VkImageViewCreateInfo getImageViewInfo(VkFormat format, VkImage image);
+		static VkImageViewCreateInfo getImageViewInfo(VkFormat format, VkImage image, VkImageAspectFlags aspectFlags);
 
 	private:
 		void createImageView(const VkImageViewCreateInfo &imageViewInfo);

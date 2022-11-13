@@ -16,6 +16,7 @@ set(SkeletalAnimationResources
 set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/Buffer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/CommandPool.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DepthTexture.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DeviceExtensions.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffers.h"
@@ -46,6 +47,8 @@ set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/vulkan/UniformVulkan.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SwapChain.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SyncObjects.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanImage.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexArrayObject.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexArrayObjectOpenGL.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexArrayObjectVulkan.h"
@@ -53,12 +56,12 @@ set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.h"
 )
 
 set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/CommandPool.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DepthTexture.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/DeviceExtensions.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/Framebuffers.cpp"
@@ -89,6 +92,8 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/material/shader/vulkan/UniformVulkan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SwapChain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/SyncObjects.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanImage.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/VertexArrayObject.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexArrayObjectOpenGL.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexArrayObjectVulkan.cpp"
@@ -96,7 +101,6 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/VulkanInstance.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp")
 
 set(SkeletalAnimationIncludes

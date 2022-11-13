@@ -21,9 +21,10 @@ namespace Animation
 			: m_Device(LogicalDevice::getInstance()),
 			  m_SwapChain(m_Device.getPhysicalDevice(), m_Device.getDevice(), m_Device.getSurface()),
 			  m_ImageViews(m_Device.getDevice(), m_SwapChain),
-			  m_RenderPass(m_Device.getDevice(), m_SwapChain.getFormat()),
-			  m_Framebuffers(m_Device.getDevice(), m_RenderPass.getRenderPass(), m_SwapChain.getExtent(), m_ImageViews),
+			  m_RenderPass(m_Device.getPhysicalDevice(), m_Device.getDevice(), m_SwapChain.getFormat()),
 			  m_CommandPool(m_Device.getDevice(), m_Device.getPhysicalDevice(), m_Device.getSurface()),
+			  m_DepthTexture(m_SwapChain.getExtent()),
+			  m_Framebuffers(m_Device.getDevice(), m_RenderPass.getRenderPass(), m_SwapChain.getExtent(), m_ImageViews, m_DepthTexture.getImageView()),
 			  m_SyncObjects(m_Device.getDevice(), Animation::CommandPool::size())
 	{
 		spdlog::info("Initialized Vulkan renderer.");
@@ -171,7 +172,11 @@ namespace Animation
 
 		m_SwapChain.recreate();
 		m_ImageViews.recreate(device, m_SwapChain);
-		m_Framebuffers.recreate(device, m_RenderPass.getRenderPass(), m_SwapChain.getExtent(), m_ImageViews);
+		m_DepthTexture.recreate(m_SwapChain.getExtent());
+
+		VkRenderPass renderPass = m_RenderPass.getRenderPass();
+		VkImageView depthView = m_DepthTexture.getImageView();
+		m_Framebuffers.recreate(device, renderPass, m_SwapChain.getExtent(), m_ImageViews, depthView);
 	}
 
 	VkResult RendererVulkan::presentQueue(const std::vector<VkSemaphore> &signalSemaphores) const

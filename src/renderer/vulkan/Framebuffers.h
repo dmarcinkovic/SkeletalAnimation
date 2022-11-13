@@ -14,20 +14,23 @@ namespace Animation
 		std::vector<Framebuffer> m_Framebuffers;
 
 	public:
-		Framebuffers(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images);
+		Framebuffers(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+					 const ImageViews &images, VkImageView depthView);
 
 		Framebuffers(const Framebuffers &) = delete;
 
 		Framebuffers &operator=(const Framebuffers &) = delete;
 
-		void recreate(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images);
+		void recreate(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+					  const ImageViews &images, VkImageView depthView);
 
 		[[nodiscard]] std::size_t size() const;
 
 		const Framebuffer &operator[](std::size_t index) const;
 
 	private:
-		void create(VkDevice device, VkRenderPass renderPass, VkExtent2D extent, const ImageViews &images);
+		void create(VkDevice device, VkRenderPass renderPass, VkExtent2D extent,
+					const ImageViews &images, VkImageView depthView);
 	};
 }
 
