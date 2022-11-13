@@ -30,6 +30,7 @@ namespace Animation
 		}
 
 		Window::getWindow().getFramebufferSize(m_Width, m_Height);
+		glEnable(GL_DEPTH_TEST);
 
 		spdlog::info("Initialized OpenGL renderer.");
 	}
