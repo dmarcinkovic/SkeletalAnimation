@@ -30,7 +30,7 @@ namespace Animation
 
 		[[nodiscard]] virtual glm::mat4 getProjectionMatrix() const = 0;
 
-		void update(float shininess, float specularStrength);
+		void update(const class Material *material);
 	};
 }
 

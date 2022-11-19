@@ -13,7 +13,7 @@ namespace Animation
 	class Renderer
 	{
 	protected:
-		const glm::vec4 m_ClearColor{1.0f, 1.0f, 1.0f, 1.0f};
+		const glm::vec4 m_ClearColor{0.7f, 0.7f, 0.7f, 1.0f};
 		std::vector<Mesh> m_Meshes;
 
 	public:
@@ -44,6 +44,10 @@ namespace Animation
 		[[nodiscard]] virtual std::unique_ptr<Shader> getShader() const = 0;
 
 		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const = 0;
+
+		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::uint8_t *data, int len) const = 0;
+
+		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::uint8_t *pixels, int w, int h) const = 0;
 	};
 }
 

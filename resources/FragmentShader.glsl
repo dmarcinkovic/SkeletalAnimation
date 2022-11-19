@@ -8,8 +8,9 @@ layout (location = 2) flat in vec4 lightColor;
 layout (location = 3) flat in vec3 cameraPosition;
 layout (location = 4) flat in vec3 lightPosition;
 layout (location = 5) in vec3 worldPosition;
-layout (location = 6) flat in float shininess;
-layout (location = 7) flat in float specularStrength;
+layout (location = 6) flat in vec3 diffuseColor;
+layout (location = 7) flat in float shininess;
+layout (location = 8) flat in float specularStrength;
 
 layout(location = 0) out vec4 outColor;
 
@@ -20,7 +21,7 @@ void main()
     float ambientFactor = 0.2f;
     vec3 ambient = lightColor.rgb * ambientFactor;
 
-    vec3 lightDirection = -normalize(lightPosition);
+    vec3 lightDirection = normalize(lightPosition);
     float diffuseFactor = max(dot(normal, lightDirection), 0.0f);
     vec3 diffuse = lightColor.rgb * diffuseFactor;
 
@@ -29,7 +30,7 @@ void main()
     float specularFactor = pow(max(dot(reflectedVector, toCameraVector), 0.0f), shininess);
     vec3 specular = specularStrength * specularFactor * lightColor.rgb;
 
-    vec3 objectColor = texture(texSampler, textureCoordinates).rgb;
+    vec3 objectColor = (diffuseColor.r < 0) ? texture(texSampler, textureCoordinates).rgb : diffuseColor;
     vec3 resultColor = (ambient + diffuse + specular) * objectColor;
     outColor = vec4(resultColor, 1.0f);
 }

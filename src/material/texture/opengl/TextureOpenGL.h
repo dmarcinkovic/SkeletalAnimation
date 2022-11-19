@@ -13,6 +13,10 @@ namespace Animation
 	public:
 		explicit TextureOpenGL(const std::filesystem::path &path);
 
+		TextureOpenGL(const std::uint8_t *data, int len);
+
+		TextureOpenGL(int width, int height, const std::uint8_t *pixels);
+
 		void createTexture(const std::unique_ptr<UniformOpenGL> &uniform);
 
 	private:

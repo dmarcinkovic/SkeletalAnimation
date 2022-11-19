@@ -21,6 +21,7 @@ namespace Animation
 			alignas(16) glm::vec4 lightColor;
 			alignas(16) glm::vec3 cameraPosition;
 			alignas(16) glm::vec3 lightPosition;
+			alignas(16) glm::vec3 diffuseColor;
 			alignas(4) float shininess;
 			alignas(4) float specularStrength;
 		};

@@ -31,6 +31,8 @@ namespace Animation
 
 		Window::getWindow().getFramebufferSize(m_Width, m_Height);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		spdlog::info("Initialized OpenGL renderer.");
 	}
@@ -72,6 +74,16 @@ namespace Animation
 	std::unique_ptr<Texture> RendererOpenGL::getTexture(const std::filesystem::path &path) const
 	{
 		return std::make_unique<TextureOpenGL>(path);
+	}
+
+	std::unique_ptr<Texture> RendererOpenGL::getTexture(const std::uint8_t *data, int len) const
+	{
+		return std::make_unique<TextureOpenGL>(data, len);
+	}
+
+	std::unique_ptr<Texture> RendererOpenGL::getTexture(const std::uint8_t *pixels, int width, int height) const
+	{
+		return std::make_unique<TextureOpenGL>(width, height, pixels);
 	}
 
 	float RendererOpenGL::getWindowAspectRatio() const

@@ -10,8 +10,9 @@ layout (location = 2) flat out vec4 lightColor;
 layout (location = 3) flat out vec3 cameraPosition;
 layout (location = 4) flat out vec3 lightPosition;
 layout (location = 5) out vec3 worldPosition;
-layout (location = 6) flat out float shininess;
-layout (location = 7) flat out float specularStrength;
+layout (location = 6) flat out vec3 diffuseColor;
+layout (location = 7) flat out float shininess;
+layout (location = 8) flat out float specularStrength;
 
 layout (binding = 0) uniform UniformBufferObject {
     mat4 modelMatrix;
@@ -20,6 +21,7 @@ layout (binding = 0) uniform UniformBufferObject {
     vec4 lightColor;
     vec3 cameraPosition;
     vec3 lightPosition;
+    vec3 diffuseColor;
     float shininess;
     float specularStrength;
 } uniformObject;
@@ -39,6 +41,7 @@ void main()
     lightColor = uniformObject.lightColor;
     cameraPosition = uniformObject.cameraPosition;
     lightPosition = uniformObject.lightPosition;
+    diffuseColor = uniformObject.diffuseColor;
 
     shininess = uniformObject.shininess;
     specularStrength = uniformObject.specularStrength;

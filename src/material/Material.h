@@ -2,6 +2,7 @@
 #define SKELETALANIMATION_MATERIAL_H
 
 #include <memory>
+#include <assimp/scene.h>
 
 #include "Shader.h"
 #include "Texture.h"
@@ -11,20 +12,41 @@ namespace Animation
 	class Material final
 	{
 	private:
+		std::unique_ptr<class Renderer> &m_Renderer;
+
 		float m_Shininess{32.0f};
 		float m_SpecularStrength{0.5f};
+		glm::vec3 m_DiffuseColor{-1.0f};
 
-		std::unique_ptr<Shader> m_Shader;
-		std::unique_ptr<Texture> m_Texture;
+		std::unique_ptr<Shader> m_Shader{};
+		std::unique_ptr<Texture> m_Texture{};
 
 	public:
-		Material(std::unique_ptr<Shader> shader, std::unique_ptr<Texture> texture);
+		Material();
+
+		Material(const std::filesystem::path &sceneFile, const aiScene *scene, const aiMaterial *material);
 
 		void start() const;
 
 		void update() const;
 
 		void end() const;
+
+		[[nodiscard]] float getShininess() const;
+
+		[[nodiscard]] float getSpecularStrength() const;
+
+		[[nodiscard]] const glm::vec3 &getDiffuseColor() const;
+
+	private:
+		std::unique_ptr<Texture> getDiffuseTexture(const std::filesystem::path &scenePath,
+												   const aiScene *scene, const aiMaterial *material) const;
+
+		std::unique_ptr<Texture> getEmbeddedTexture(const aiTexture *embeddedTexture) const;
+
+		[[nodiscard]] std::unique_ptr<Texture> getExternalTexture(const std::filesystem::path &texturePath) const;
+
+		void storeMaterialProperties(const aiMaterial *material);
 	};
 }
 

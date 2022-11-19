@@ -32,6 +32,10 @@ namespace Animation
 
 		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::filesystem::path &path) const override;
 
+		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::uint8_t *data, int len) const override;
+
+		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::uint8_t *pixels, int w, int h) const override;
+
 		[[nodiscard]] float getWindowAspectRatio() const;
 
 	private:

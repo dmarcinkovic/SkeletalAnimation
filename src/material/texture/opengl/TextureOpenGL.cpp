@@ -7,6 +7,17 @@ namespace Animation
 	{
 	}
 
+	TextureOpenGL::TextureOpenGL(const std::uint8_t *data, int len)
+			: Texture(data, len)
+	{
+	}
+
+	TextureOpenGL::TextureOpenGL(int width, int height, const std::uint8_t *pixels)
+			: Texture(width, height, pixels)
+	{
+
+	}
+
 	void TextureOpenGL::setTextureParameters()
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

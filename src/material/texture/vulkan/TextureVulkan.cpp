@@ -1,4 +1,3 @@
-#include <cassert>
 #include <cstring>
 #include <spdlog/spdlog.h>
 
@@ -44,6 +43,16 @@ namespace Animation
 {
 	TextureVulkan::TextureVulkan(const std::filesystem::path &path)
 			: Texture(path), m_Device(LogicalDevice::getInstance().getDevice())
+	{
+	}
+
+	TextureVulkan::TextureVulkan(const std::uint8_t *data, int len)
+			: Texture(data, len), m_Device(LogicalDevice::getInstance().getDevice())
+	{
+	}
+
+	TextureVulkan::TextureVulkan(int width, int height, const std::uint8_t *pixels)
+			: Texture(width, height, pixels), m_Device(LogicalDevice::getInstance().getDevice())
 	{
 	}
 

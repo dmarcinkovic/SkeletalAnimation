@@ -16,6 +16,10 @@ namespace Animation
 	public:
 		explicit Texture(const std::filesystem::path &path);
 
+		Texture(const std::uint8_t *data, int size);
+
+		Texture(int width, int height, const std::uint8_t *pixels);
+
 		Texture(const Texture &) = delete;
 
 		Texture(Texture &&) noexcept = delete;

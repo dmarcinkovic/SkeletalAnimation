@@ -11,6 +11,7 @@ set(SkeletalAnimationResources
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/VertexShader.glsl.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/FragmentShader.spv.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/VertexShader.spv.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/Texture.png.h"
 )
 
 set(SkeletalAnimationHeaders
@@ -29,6 +30,7 @@ set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/material/Material.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Mesh.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/MeshData.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Scene.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/PhysicalDevice.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/QueueFamily.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/Renderer.h"
@@ -74,6 +76,7 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/material/Material.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Mesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/MeshData.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/mesh/Scene.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/PhysicalDevice.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan/QueueFamily.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/Renderer.cpp"

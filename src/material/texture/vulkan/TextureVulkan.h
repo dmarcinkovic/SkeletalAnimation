@@ -20,6 +20,10 @@ namespace Animation
 	public:
 		explicit TextureVulkan(const std::filesystem::path &path);
 
+		TextureVulkan(const std::uint8_t *data, int len);
+
+		TextureVulkan(int width, int height, const std::uint8_t *pixels);
+
 		~TextureVulkan() override;
 
 		void createTexture(const std::unique_ptr<UniformVulkan> &uniform);

@@ -2,6 +2,7 @@
 #define SKELETALANIMATION_MESHDATA_H
 
 #include <cstdint>
+#include <filesystem>
 
 #include "VertexArrayObject.h"
 
@@ -10,26 +11,30 @@ namespace Animation
 	class MeshData
 	{
 	private:
-		static constexpr int DATA_SIZE = 3;
+		static constexpr int VERTEX_DATA_SIZE = 3;
+		static constexpr int NORMALS_DATA_SIZE = 3;
+		static constexpr int UV_DATA_SIZE = 2;
 
-		std::uint64_t m_VertexCount{};
-		std::unique_ptr<VertexArrayObject> m_VertexArrayObject;
+		std::uint64_t m_IndicesCount{};
+		std::unique_ptr<VertexArrayObject> m_VertexArrayObject{};
 
 	public:
-		// TODO: create functions that will parse the mesh using assimp library
-
-		// TODO: remove this constructor
-		MeshData(const std::vector<float> &vertices, const std::vector<float> &textureCoordinates,
-				 const std::vector<float> &normals, const std::vector<std::uint32_t> &indices);
-
-		// TODO: remove this constructor
-		MeshData(const std::vector<float> &vertices, const std::vector<std::uint32_t> &indices);
+		explicit MeshData(const class aiMesh *mesh);
 
 		[[nodiscard]] std::uint64_t getVertexCount() const;
 
 		void bindMesh() const;
 
 		void unbindMesh() const;
+
+	private:
+		void parseVertices(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+
+		void parseTextureCoordinates(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+
+		void parseNormals(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+
+		void parseIndices(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 	};
 }
 

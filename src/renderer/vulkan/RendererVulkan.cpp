@@ -24,7 +24,8 @@ namespace Animation
 			  m_RenderPass(m_Device.getPhysicalDevice(), m_Device.getDevice(), m_SwapChain.getFormat()),
 			  m_CommandPool(m_Device.getDevice(), m_Device.getPhysicalDevice(), m_Device.getSurface()),
 			  m_DepthTexture(m_SwapChain.getExtent()),
-			  m_Framebuffers(m_Device.getDevice(), m_RenderPass.getRenderPass(), m_SwapChain.getExtent(), m_ImageViews, m_DepthTexture.getImageView()),
+			  m_Framebuffers(m_Device.getDevice(), m_RenderPass.getRenderPass(), m_SwapChain.getExtent(), m_ImageViews,
+							 m_DepthTexture.getImageView()),
 			  m_SyncObjects(m_Device.getDevice(), Animation::CommandPool::size())
 	{
 		spdlog::info("Initialized Vulkan renderer.");
@@ -218,5 +219,15 @@ namespace Animation
 	std::unique_ptr<Texture> RendererVulkan::getTexture(const std::filesystem::path &path) const
 	{
 		return std::make_unique<TextureVulkan>(path);
+	}
+
+	std::unique_ptr<Texture> RendererVulkan::getTexture(const std::uint8_t *data, int len) const
+	{
+		return std::make_unique<TextureVulkan>(data, len);
+	}
+
+	std::unique_ptr<Texture> RendererVulkan::getTexture(const std::uint8_t *pixels, int width, int height) const
+	{
+		return std::make_unique<TextureVulkan>(width, height, pixels);
 	}
 }

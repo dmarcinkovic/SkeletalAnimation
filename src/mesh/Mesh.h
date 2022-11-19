@@ -1,6 +1,8 @@
 #ifndef SKELETALANIMATION_MESH_H
 #define SKELETALANIMATION_MESH_H
 
+#include <memory>
+
 #include "Material.h"
 #include "MeshData.h"
 
@@ -10,10 +12,10 @@ namespace Animation
 	{
 	private:
 		MeshData m_MeshData;
-		Material m_Material;
+		std::shared_ptr<Material> m_Material;
 
 	public:
-		Mesh(MeshData meshData, Material material);
+		Mesh(MeshData meshData, std::shared_ptr<Material> material);
 
 		void render() const;
 	};
