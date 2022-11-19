@@ -30,9 +30,7 @@ namespace Animation
 		}
 
 		Window::getWindow().getFramebufferSize(m_Width, m_Height);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		setRendererProperties();
 
 		spdlog::info("Initialized OpenGL renderer.");
 	}
@@ -91,5 +89,13 @@ namespace Animation
 		assert(m_Width > 0);
 		assert(m_Height > 0);
 		return static_cast<float>(m_Width) / static_cast<float>(m_Height);
+	}
+
+	void RendererOpenGL::setRendererProperties()
+	{
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_FRAMEBUFFER_SRGB);
 	}
 }

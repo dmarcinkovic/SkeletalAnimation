@@ -40,6 +40,8 @@ namespace Animation
 
 	private:
 		RendererOpenGL();
+
+		static void setRendererProperties();
 	};
 }
 
