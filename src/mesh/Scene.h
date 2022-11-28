@@ -19,7 +19,7 @@ namespace Animation
 	private:
 		explicit Scene(std::filesystem::path scenePath);
 
-		void parseScene(const class aiScene *scene);
+		void parseScene(const aiScene *scene);
 
 		void parseMeshes(const aiScene *scene, const std::vector<std::shared_ptr<class Material>> &materials);
 

@@ -104,7 +104,7 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp" src/mesh/Bone.cpp src/mesh/Bone.h)
 
 set(SkeletalAnimationIncludes
     "${CMAKE_CURRENT_SOURCE_DIR}/resources"

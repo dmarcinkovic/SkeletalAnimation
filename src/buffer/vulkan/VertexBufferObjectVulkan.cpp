@@ -30,8 +30,22 @@ namespace Animation
 		m_DataSize = dataSize;
 		m_Binding = binding;
 
-		VkDevice device = LogicalDevice::getInstance().getDevice();
 		VkDeviceSize bufferSize = sizeof(float) * data.size();
+		storeData(bufferSize, data.data());
+	}
+
+	void VertexBufferObjectVulkan::storeIntData(std::uint32_t binding, const std::vector<int> &data, int dataSize)
+	{
+		m_DataSize = dataSize;
+		m_Binding = binding;
+
+		VkDeviceSize bufferSize = sizeof(int) * data.size();
+		storeData(bufferSize, data.data());
+	}
+
+	void VertexBufferObjectVulkan::storeData(VkDeviceSize bufferSize, const void *data)
+	{
+		VkDevice device = LogicalDevice::getInstance().getDevice();
 
 		createVertexBuffer(bufferSize);
 		VulkanBuffer stagingBuffer = getStagingBuffer(bufferSize);
@@ -39,7 +53,7 @@ namespace Animation
 		{
 			void *gpuData;
 			vkMapMemory(device, stagingBuffer.getBufferMemory(), 0, bufferSize, 0, &gpuData);
-			std::memcpy(gpuData, data.data(), bufferSize);
+			std::memcpy(gpuData, data, bufferSize);
 			vkUnmapMemory(device, stagingBuffer.getBufferMemory());
 		}
 

@@ -10,7 +10,7 @@ int main()
 
 	std::unique_ptr<Animation::Renderer> &renderer = Animation::Renderer::getRenderer();
 
-	Animation::Scene::createScene("/home/david/untitled.obj");
+	Animation::Scene::createScene("/home/david/Downloads/Blender/Dying.fbx");
 
 	while (window.isRunning())
 	{

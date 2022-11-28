@@ -19,7 +19,8 @@ namespace Animation
 
 		Assimp::Importer importer;
 		const std::uint32_t flags =
-				aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenSmoothNormals;
+				aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenSmoothNormals |
+				aiProcess_LimitBoneWeights;
 		const aiScene *aiScene = importer.ReadFile(sceneFile.c_str(), flags);
 
 		if (!aiScene)
@@ -38,6 +39,15 @@ namespace Animation
 		assert(!materials.empty());
 
 		parseMeshes(scene, materials);
+
+		if (scene->HasAnimations())
+		{
+			for (int i = 0; i < scene->mNumAnimations; ++i)
+			{
+				const aiAnimation *animation = scene->mAnimations[i];
+				assert(animation);
+			}
+		}
 	}
 
 	void Scene::parseMeshes(const aiScene *scene, const std::vector<std::shared_ptr<Material>> &materials)

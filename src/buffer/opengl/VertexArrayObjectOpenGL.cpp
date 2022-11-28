@@ -41,16 +41,30 @@ namespace Animation
 		glBindVertexArray(0);
 	}
 
-	void VertexArrayObjectOpenGL::storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject)
+	void VertexArrayObjectOpenGL::storeFloatData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBuffer)
 	{
 		assert(attributeIndex >= 0);
 
-		m_VertexBufferObjects[attributeIndex] = std::move(vertexBufferObject);
+		m_VertexBufferObjects[attributeIndex] = std::move(vertexBuffer);
 		const std::unique_ptr<VertexBufferObject> &vbo = m_VertexBufferObjects[attributeIndex];
 
 		bind();
 		vbo->bind();
 		glVertexAttribPointer(attributeIndex, vbo->getDataSize(), GL_FLOAT, GL_FALSE, 0, nullptr);
+		vbo->unbind();
+		unbind();
+	}
+
+	void VertexArrayObjectOpenGL::storeIntData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBuffer)
+	{
+		assert(attributeIndex >= 0);
+
+		m_VertexBufferObjects[attributeIndex] = std::move(vertexBuffer);
+		const std::unique_ptr<VertexBufferObject> &vbo = m_VertexBufferObjects[attributeIndex];
+
+		bind();
+		vbo->bind();
+		glVertexAttribIPointer(attributeIndex, vbo->getDataSize(), GL_INT, 0, nullptr);
 		vbo->unbind();
 		unbind();
 	}

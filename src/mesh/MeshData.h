@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <assimp/scene.h>
 
 #include "VertexArrayObject.h"
 
@@ -14,6 +15,7 @@ namespace Animation
 		static constexpr int VERTEX_DATA_SIZE = 3;
 		static constexpr int NORMALS_DATA_SIZE = 3;
 		static constexpr int UV_DATA_SIZE = 2;
+		static constexpr int NUMBER_OF_BONES_PER_VERTEX = AI_LMW_MAX_WEIGHTS;
 
 		std::uint64_t m_IndicesCount{};
 		std::unique_ptr<VertexArrayObject> m_VertexArrayObject{};
@@ -28,13 +30,15 @@ namespace Animation
 		void unbindMesh() const;
 
 	private:
-		void parseVertices(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+		void parseVertices(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 
-		void parseTextureCoordinates(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+		void parseTextureCoordinates(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 
-		void parseNormals(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+		void parseNormals(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 
-		void parseIndices(const class aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+		void parseIndices(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+
+		void parseBones(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 	};
 }
 

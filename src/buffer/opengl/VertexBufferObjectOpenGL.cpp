@@ -34,11 +34,22 @@ namespace Animation
 		m_DataSize = dataSize;
 		m_Binding = binding;
 
+		storeData(data.data(), static_cast<GLsizeiptr>(data.size() * sizeof(float)));
+	}
+
+	void VertexBufferObjectOpenGL::storeIntData(std::uint32_t binding, const std::vector<int> &data, int dataSize)
+	{
+		assert(dataSize > 0);
+		m_DataSize = dataSize;
+		m_Binding = binding;
+
+		storeData(data.data(), static_cast<GLsizeiptr>(data.size() * sizeof(int)));
+	}
+
+	void VertexBufferObjectOpenGL::storeData(const void *data, GLsizeiptr bufferSize) const
+	{
 		bind();
-
-		auto bufferSize = static_cast<GLsizeiptr>(data.size() * sizeof(float));
-		glBufferData(GL_ARRAY_BUFFER, bufferSize, data.data(), GL_STATIC_DRAW);
-
+		glBufferData(GL_ARRAY_BUFFER, bufferSize, data, GL_STATIC_DRAW);
 		unbind();
 	}
 }

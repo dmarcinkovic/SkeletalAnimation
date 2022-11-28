@@ -24,7 +24,11 @@ namespace Animation
 
 		void storeFloatData(std::uint32_t binding, const std::vector<float> &data, int dataSize) override;
 
+		void storeIntData(std::uint32_t binding, const std::vector<int> &data, int dataSize) override;
+
 	private:
+		void storeData(VkDeviceSize bufferSize, const void *data);
+
 		static VulkanBuffer getStagingBuffer(VkDeviceSize bufferSize);
 
 		void createVertexBuffer(VkDeviceSize bufferSize);

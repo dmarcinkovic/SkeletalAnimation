@@ -30,11 +30,18 @@ namespace Animation
 		}
 	}
 
-	void VertexArrayObjectVulkan::storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject)
+	void VertexArrayObjectVulkan::storeFloatData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBuffer)
 	{
 		assert(attributeIndex >= 0);
-		assert(vertexBufferObject);
-		m_VertexBufferObjects[attributeIndex] = std::move(vertexBufferObject);
+		assert(vertexBuffer);
+		m_VertexBufferObjects[attributeIndex] = std::move(vertexBuffer);
+	}
+
+	void VertexArrayObjectVulkan::storeIntData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBuffer)
+	{
+		assert(attributeIndex >= 0);
+		assert(vertexBuffer);
+		m_VertexBufferObjects[attributeIndex] = std::move(vertexBuffer);
 	}
 
 	void VertexArrayObjectVulkan::setIndexBufferData(const std::vector<std::uint32_t> &indices)

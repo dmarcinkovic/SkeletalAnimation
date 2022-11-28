@@ -21,7 +21,9 @@ namespace Animation
 
 		~VertexArrayObject() override = default;
 
-		virtual void storeData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject) = 0;
+		virtual void storeFloatData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject) = 0;
+
+		virtual void storeIntData(int attributeIndex, std::unique_ptr<VertexBufferObject> vertexBufferObject) = 0;
 
 		virtual void setIndexBufferData(const std::vector<std::uint32_t> &indices) = 0;
 	};

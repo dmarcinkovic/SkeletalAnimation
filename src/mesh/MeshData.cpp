@@ -1,10 +1,65 @@
 #include <cassert>
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
 #include <spdlog/spdlog.h>
 
 #include "MeshData.h"
 #include "Renderer.h"
+
+namespace
+{
+	void parseBone(const aiBone *bone, int boneId, std::vector<std::vector<float>> &weights,
+				   std::vector<std::vector<int>> &ids)
+	{
+		for (int j = 0; j < bone->mNumWeights; ++j)
+		{
+			aiVertexWeight weight = bone->mWeights[j];
+
+			unsigned int vertexIndex = weight.mVertexId;
+			assert(vertexIndex < weights.size());
+			assert(vertexIndex < ids.size());
+
+			weights[vertexIndex].emplace_back(weight.mWeight);
+			ids[vertexIndex].emplace_back(boneId);
+
+			assert(weights[vertexIndex].size() <= AI_LMW_MAX_WEIGHTS);
+			assert(ids[vertexIndex].size() <= AI_LMW_MAX_WEIGHTS);
+		}
+	}
+
+	std::vector<float> flattenBoneWeights(std::vector<std::vector<float>> boneWeights)
+	{
+		std::vector<float> result;
+		result.reserve(AI_LMW_MAX_WEIGHTS * boneWeights.size());
+
+		for (auto &weights: boneWeights)
+		{
+			weights.resize(AI_LMW_MAX_WEIGHTS);
+			for (float weight: weights)
+			{
+				result.emplace_back(weight);
+			}
+		}
+
+		return result;
+	}
+
+	std::vector<int> flattenBoneIndices(std::vector<std::vector<int>> boneIds)
+	{
+		std::vector<int> result;
+		result.reserve(AI_LMW_MAX_WEIGHTS * boneIds.size());
+
+		for (auto &ids: boneIds)
+		{
+			ids.resize(AI_LMW_MAX_WEIGHTS, -1);
+			for (int id: ids)
+			{
+				result.emplace_back(id);
+			}
+		}
+
+		return result;
+	}
+}
 
 namespace Animation
 {
@@ -17,6 +72,7 @@ namespace Animation
 		parseVertices(mesh, renderer);
 		parseTextureCoordinates(mesh, renderer);
 		parseNormals(mesh, renderer);
+		parseBones(mesh, renderer);
 	}
 
 	std::uint64_t MeshData::getVertexCount() const
@@ -52,7 +108,7 @@ namespace Animation
 
 		std::unique_ptr<VertexBufferObject> positionData = renderer->createVertexBufferObject();
 		positionData->storeFloatData(0, vertices, VERTEX_DATA_SIZE);
-		m_VertexArrayObject->storeData(0, std::move(positionData));
+		m_VertexArrayObject->storeFloatData(0, std::move(positionData));
 	}
 
 	void MeshData::parseTextureCoordinates(const aiMesh *mesh, const std::unique_ptr<Renderer> &renderer)
@@ -71,7 +127,7 @@ namespace Animation
 
 			std::unique_ptr<VertexBufferObject> textureData = renderer->createVertexBufferObject();
 			textureData->storeFloatData(1, uvs, UV_DATA_SIZE);
-			m_VertexArrayObject->storeData(1, std::move(textureData));
+			m_VertexArrayObject->storeFloatData(1, std::move(textureData));
 		}
 	}
 
@@ -92,7 +148,7 @@ namespace Animation
 
 			std::unique_ptr<VertexBufferObject> normalsData = renderer->createVertexBufferObject();
 			normalsData->storeFloatData(2, normals, NORMALS_DATA_SIZE);
-			m_VertexArrayObject->storeData(2, std::move(normalsData));
+			m_VertexArrayObject->storeFloatData(2, std::move(normalsData));
 		}
 	}
 
@@ -114,5 +170,34 @@ namespace Animation
 			indices.emplace_back(face.mIndices[2]);
 		}
 		m_VertexArrayObject->setIndexBufferData(indices);
+	}
+
+	void MeshData::parseBones(const aiMesh *mesh, const std::unique_ptr<Renderer> &renderer)
+	{
+		if (mesh->HasBones())
+		{
+			std::vector<std::vector<float>> boneWeights(mesh->mNumVertices);
+			std::vector<std::vector<int>> boneIds(mesh->mNumVertices);
+
+			for (int i = 0; i < mesh->mNumBones; ++i)
+			{
+				const aiBone *bone = mesh->mBones[i];
+				assert(bone);
+
+				parseBone(bone, i, boneWeights, boneIds);
+			}
+
+			std::vector<float> weights = flattenBoneWeights(std::move(boneWeights));
+
+			std::unique_ptr<VertexBufferObject> boneWeightsData = renderer->createVertexBufferObject();
+			boneWeightsData->storeFloatData(3, weights, NUMBER_OF_BONES_PER_VERTEX);
+			m_VertexArrayObject->storeFloatData(3, std::move(boneWeightsData));
+
+			std::vector<int> ids = flattenBoneIndices(std::move(boneIds));
+
+			std::unique_ptr<VertexBufferObject> boneIdsData = renderer->createVertexBufferObject();
+			boneIdsData->storeIntData(4, ids, NUMBER_OF_BONES_PER_VERTEX);
+			m_VertexArrayObject->storeIntData(4, std::move(boneIdsData));
+		}
 	}
 }
