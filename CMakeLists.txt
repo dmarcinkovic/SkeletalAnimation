@@ -32,6 +32,7 @@ set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/animation/AnimationClip.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/animation/Interpolation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Bone.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Camera.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Mesh.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/MeshData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Scene.h"
@@ -82,6 +83,7 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/animation/AnimationClip.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/animation/Interpolation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Bone.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Camera.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Mesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/MeshData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/scene/Scene.cpp"
@@ -113,7 +115,7 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp"
-        )
+)
 
 set(SkeletalAnimationIncludes
     "${CMAKE_CURRENT_SOURCE_DIR}/resources"
