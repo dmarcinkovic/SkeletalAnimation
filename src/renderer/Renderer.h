@@ -17,7 +17,15 @@ namespace Animation
 		const glm::vec4 m_ClearColor{0.7f, 0.7f, 0.7f, 1.0f};
 
 	public:
+		enum class RendererType
+		{
+			OPENGL,
+			VULKAN
+		};
+
 		static std::unique_ptr<Renderer> &getRenderer();
+
+		static void setRendererType(RendererType type);
 
 		static void setWindowFlags();
 

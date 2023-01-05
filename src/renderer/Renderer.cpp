@@ -2,22 +2,35 @@
 
 #include "RendererVulkan.h"
 #include "RendererOpenGL.h"
+#include "Renderer.h"
 
 namespace Animation
 {
+	namespace
+	{
+		Renderer::RendererType rendererType = Renderer::RendererType::OPENGL;
+	}
+
 	std::unique_ptr<Renderer> &Renderer::getRenderer()
 	{
-		// TODO: do not hardcode: find which render is better for given OS
+		if (rendererType == RendererType::OPENGL)
+		{
+			return RendererOpenGL::getRenderer();
+		}
+
 		return RendererVulkan::getRenderer();
-//		return RendererOpenGL::getRenderer();
 	}
 
 	void Renderer::setWindowFlags()
 	{
-		// TODO: do not hardcode
-//		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		if (rendererType == RendererType::OPENGL)
+		{
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		} else
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		}
 	}
 
 	void Renderer::preRender()
@@ -28,5 +41,10 @@ namespace Animation
 	void Renderer::postRender()
 	{
 
+	}
+
+	void Renderer::setRendererType(Renderer::RendererType type)
+	{
+		rendererType = type;
 	}
 }

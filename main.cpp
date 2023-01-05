@@ -4,6 +4,7 @@
 
 int main()
 {
+	Animation::Renderer::setRendererType(Animation::Renderer::RendererType::VULKAN);
 	Animation::Window &window = Animation::Window::getWindow();
 
 	Animation::Scene scene = Animation::Scene::createScene("/home/david/Downloads/Blender/Dying.fbx");
