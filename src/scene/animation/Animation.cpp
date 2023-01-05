@@ -9,6 +9,8 @@ namespace Animation
 	{
 		if (scene->HasAnimations())
 		{
+			spdlog::info("Found {} animations.", scene->mNumAnimations);
+
 			for (int i = 0; i < scene->mNumAnimations; ++i)
 			{
 				const aiAnimation *animation = scene->mAnimations[i];
@@ -16,6 +18,9 @@ namespace Animation
 
 				m_Clips.emplace_back(animation);
 			}
+		} else
+		{
+			spdlog::info("No animation found.");
 		}
 	}
 

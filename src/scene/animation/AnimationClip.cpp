@@ -2,6 +2,7 @@
 #include <cassert>
 #include <stack>
 #include <glm/gtc/type_ptr.hpp>
+#include <spdlog/spdlog.h>
 
 #include "AnimationClip.h"
 #include "Bone.h"
@@ -25,6 +26,9 @@ namespace Animation
 		{
 			m_TicksPerSecond = 25.0f;
 		}
+
+		float durationInSeconds = m_DurationInTicks / m_TicksPerSecond;
+		spdlog::info("Animation '{}' is {} seconds long.", animation->mName.C_Str(), durationInSeconds);
 
 		for (int i = 0; i < animation->mNumChannels; ++i)
 		{

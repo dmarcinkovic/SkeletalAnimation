@@ -180,6 +180,8 @@ namespace Animation
 
 		if (mesh->HasBones())
 		{
+			spdlog::info("Mesh '{}' has {} bones.", mesh->mName.C_Str(), mesh->mNumBones);
+
 			std::vector<std::vector<float>> boneWeights(mesh->mNumVertices);
 			std::vector<std::vector<int>> boneIds(mesh->mNumVertices);
 
@@ -200,6 +202,8 @@ namespace Animation
 			ids = flattenBoneIndices(std::move(boneIds));
 		} else
 		{
+			spdlog::info("Mesh '{}' has no bones.", mesh->mName.C_Str());
+
 			weights.resize(mesh->mNumVertices * NUMBER_OF_BONES_PER_VERTEX);
 			ids.resize(mesh->mNumVertices * NUMBER_OF_BONES_PER_VERTEX, -1);
 		}

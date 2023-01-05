@@ -49,10 +49,14 @@ namespace Animation
 
 	void Scene::parseMeshes(const std::vector<std::shared_ptr<Material>> &materials)
 	{
+		spdlog::info("Found {} meshes.", m_Scene->mNumMeshes);
+
 		for (int i = 0; i < m_Scene->mNumMeshes; ++i)
 		{
 			const aiMesh *mesh = m_Scene->mMeshes[i];
 			assert(mesh);
+
+			spdlog::info("Parse mesh '{}'.", mesh->mName.C_Str());
 
 			MeshData meshData(mesh);
 			assert(mesh->mMaterialIndex < materials.size());
@@ -69,6 +73,8 @@ namespace Animation
 		std::vector<std::shared_ptr<Material>> materials;
 		if (m_Scene->HasMaterials())
 		{
+			spdlog::info("Found {} materials.", m_Scene->mNumMaterials);
+
 			for (int i = 0; i < m_Scene->mNumMaterials; ++i)
 			{
 				const aiMaterial *material = m_Scene->mMaterials[i];
@@ -78,6 +84,8 @@ namespace Animation
 			}
 		} else
 		{
+			spdlog::info("No materials found. Default material will be used.");
+
 			materials.emplace_back(defaultMaterial);
 		}
 
@@ -140,11 +148,11 @@ namespace Animation
 	{
 		Uniform::UniformData uniformData{};
 
-		const glm::vec3 translation{0, -5, -30};
-		const glm::vec3 scale{0.1f};
-		const glm::quat rotation = glm::quat(glm::radians(glm::vec3{0, 45, 0}));
-		const glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, translation) * glm::toMat4(rotation) *
-									  glm::scale(glm::mat4{1.0f}, scale);
+		static const glm::vec3 translation{0, -5, -30};
+		static const glm::vec3 scale{0.1f};
+		static const glm::quat rotation = glm::quat(glm::radians(glm::vec3{0, 45, 0}));
+		static const glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, translation) * glm::toMat4(rotation) *
+											 glm::scale(glm::mat4{1.0f}, scale);
 		const glm::mat4 projectionMatrix = m_Renderer->getProjectionMatrix(m_Camera);
 
 		uniformData.projectionMatrix = projectionMatrix;
