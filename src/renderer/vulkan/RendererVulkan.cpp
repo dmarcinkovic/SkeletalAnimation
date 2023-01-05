@@ -232,7 +232,7 @@ namespace Animation
 		return std::make_unique<TextureVulkan>(width, height, pixels);
 	}
 
-	glm::mat4 RendererVulkan::getProjectionMatrix(float fov, float near, float far) const
+	glm::mat4 RendererVulkan::getProjectionMatrix(const Camera &camera) const
 	{
 		VkExtent2D extent = m_SwapChain.getExtent();
 
@@ -240,6 +240,10 @@ namespace Animation
 		assert(extent.height > 0);
 
 		const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
+		const float fov = camera.getFov();
+		const float near = camera.getNear();
+		const float far = camera.getFar();
+
 		glm::mat4 projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
 		projectionMatrix[1][1] *= -1;
 

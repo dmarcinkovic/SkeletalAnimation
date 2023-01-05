@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "VertexArrayObject.h"
 #include "VertexBufferObject.h"
+#include "Camera.h"
 
 namespace Animation
 {
@@ -53,7 +54,7 @@ namespace Animation
 
 		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::uint8_t *pixels, int w, int h) const = 0;
 
-		[[nodiscard]] virtual glm::mat4 getProjectionMatrix(float fov, float near, float far) const = 0;
+		[[nodiscard]] virtual glm::mat4 getProjectionMatrix(const Camera &camera) const = 0;
 	};
 }
 

@@ -20,8 +20,28 @@ namespace Animation
 	{
 	}
 
+	const glm::vec3 &Camera::getPosition() const
+	{
+		return m_Position;
+	}
+
 	glm::mat4 Camera::getViewMatrix() const
 	{
 		return glm::lookAt(m_Position, m_Center, m_Up);
+	}
+
+	float Camera::getFov() const
+	{
+		return m_Fov;
+	}
+
+	float Camera::getNear() const
+	{
+		return m_Near;
+	}
+
+	float Camera::getFar() const
+	{
+		return m_Far;
 	}
 }

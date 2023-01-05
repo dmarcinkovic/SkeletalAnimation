@@ -100,9 +100,13 @@ namespace Animation
 		glEnable(GL_FRAMEBUFFER_SRGB);
 	}
 
-	glm::mat4 RendererOpenGL::getProjectionMatrix(float fov, float near, float far) const
+	glm::mat4 RendererOpenGL::getProjectionMatrix(const Camera &camera) const
 	{
 		const float aspect = getWindowAspectRatio();
+		const float fov = camera.getFov();
+		const float near = camera.getNear();
+		const float far = camera.getFar();
+
 		return glm::perspective(glm::radians(fov), aspect, near, far);
 	}
 }

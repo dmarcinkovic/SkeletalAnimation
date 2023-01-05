@@ -8,6 +8,8 @@
 
 #include "Animation.h"
 #include "Mesh.h"
+#include "Camera.h"
+#include "Light.h"
 
 namespace Animation
 {
@@ -22,6 +24,9 @@ namespace Animation
 
 		std::unique_ptr<Animation> m_Animation;
 		std::vector<Mesh> m_Meshes;
+
+		Camera m_Camera;
+		Light m_Light;
 
 	public:
 		static Scene createScene(const std::filesystem::path &sceneFile);
@@ -38,6 +43,12 @@ namespace Animation
 		void parseMeshes(const std::vector<std::shared_ptr<class Material>> &materials);
 
 		[[nodiscard]] std::vector<std::shared_ptr<class Material>> parseMaterials() const;
+
+		void parseCameras();
+
+		void parseLights();
+
+		Uniform::UniformData getUniformData() const;
 	};
 }
 

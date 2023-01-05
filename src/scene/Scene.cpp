@@ -41,6 +41,9 @@ namespace Animation
 		assert(!materials.empty());
 
 		parseMeshes(materials);
+		parseCameras();
+		parseLights();
+
 		m_Animation = std::make_unique<Animation>(m_Scene);
 	}
 
@@ -101,24 +104,55 @@ namespace Animation
 	{
 		m_Renderer->preRender();
 
+		Uniform::UniformData uniformData = getUniformData();
+
+		for (const Mesh &mesh: m_Meshes)
+		{
+			mesh.render(uniformData);
+		}
+
+		m_Renderer->postRender();
+	}
+
+	void Scene::parseCameras()
+	{
+		if (m_Scene->HasCameras())
+		{
+			const aiCamera *camera = m_Scene->mCameras[0];
+			assert(camera);
+
+			m_Camera = Camera(camera);
+		}
+	}
+
+	void Scene::parseLights()
+	{
+		if (m_Scene->HasLights())
+		{
+			const aiLight *light = m_Scene->mLights[0];
+			assert(light);
+
+			m_Light = Light(light);
+		}
+	}
+
+	Uniform::UniformData Scene::getUniformData() const
+	{
 		Uniform::UniformData uniformData{};
-		const glm::vec4 lightColor{1, 1, 1, 1};
-		const glm::vec3 cameraPosition{0, 0, 1};
-		const glm::vec3 lightPosition{1, 0, 0};
+
 		const glm::vec3 translation{0, -5, -30};
 		const glm::vec3 scale{0.1f};
 		const glm::quat rotation = glm::quat(glm::radians(glm::vec3{0, 45, 0}));
 		const glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, translation) * glm::toMat4(rotation) *
 									  glm::scale(glm::mat4{1.0f}, scale);
-		const glm::mat4 viewMatrix = glm::lookAt(cameraPosition, glm::vec3{0}, glm::vec3{0, 1, 0});
-		const glm::mat4 projectionMatrix = m_Renderer->getProjectionMatrix(45.0f, 0.1f, 100.0f);
+		const glm::mat4 projectionMatrix = m_Renderer->getProjectionMatrix(m_Camera);
 
 		uniformData.projectionMatrix = projectionMatrix;
 		uniformData.modelMatrix = modelMatrix;
-		uniformData.viewMatrix = viewMatrix;
-		uniformData.cameraPosition = cameraPosition;
-		uniformData.lightColor = lightColor;
-		uniformData.lightPosition = lightPosition;
+		uniformData.viewMatrix = m_Camera.getViewMatrix();
+		uniformData.cameraPosition = m_Camera.getPosition();
+		uniformData.lightColor = m_Light.getColor();
+		uniformData.lightPosition = m_Light.getPosition();
 
 		if (m_Animation->hasAnimation())
 		{
@@ -129,11 +163,6 @@ namespace Animation
 			}
 		}
 
-		for (const Mesh &mesh: m_Meshes)
-		{
-			mesh.render(uniformData);
-		}
-
-		m_Renderer->postRender();
+		return uniformData;
 	}
 }

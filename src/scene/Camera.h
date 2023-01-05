@@ -21,7 +21,15 @@ namespace Animation
 
 		explicit Camera(const class aiCamera *camera);
 
+		[[nodiscard]] const glm::vec3 &getPosition() const;
+
 		[[nodiscard]] glm::mat4 getViewMatrix() const;
+
+		[[nodiscard]] float getFov() const;
+
+		[[nodiscard]] float getNear() const;
+
+		[[nodiscard]] float getFar() const;
 	};
 }
 
