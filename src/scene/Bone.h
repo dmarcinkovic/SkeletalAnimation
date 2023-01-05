@@ -4,12 +4,15 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <string>
+#include <assimp/scene.h>
 
 namespace Animation
 {
 	class Bone final
 	{
 	public:
+		static constexpr std::uint32_t MAX_BONES = 100;
+
 		Bone() = delete;
 
 		static int getBoneIndex(const std::string &name);

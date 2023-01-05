@@ -165,7 +165,9 @@ namespace Animation
 		if (m_Animation->hasAnimation())
 		{
 			const std::vector<glm::mat4> &boneTransforms = m_Animation->getTransforms();
-			for (int i = 0; i < boneTransforms.size(); ++i)
+			const auto size = std::min<std::uint32_t>(boneTransforms.size(), Bone::MAX_BONES);
+
+			for (int i = 0; i < size; ++i)
 			{
 				uniformData.boneTransforms[i] = boneTransforms[i];
 			}

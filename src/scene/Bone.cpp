@@ -1,4 +1,3 @@
-#include <assimp/scene.h>
 #include <spdlog/spdlog.h>
 
 #include "Bone.h"
@@ -24,8 +23,10 @@ namespace Animation
 
 	void Bone::mapBone(const std::string &name)
 	{
-		// TODO: limit number of bones
-		if (!bones.contains(name))
+		if (bones.size() >= MAX_BONES)
+		{
+			spdlog::error("Cannot map bone '{}' because the limit of {} bones is exceeded.", name, MAX_BONES);
+		} else if (!bones.contains(name))
 		{
 			bones[name] = static_cast<int>(bones.size());
 		}
@@ -33,8 +34,11 @@ namespace Animation
 
 	void Bone::setBoneOffset(const std::string &name, const aiMatrix4x4 &offset)
 	{
-		assert(bones.contains(name));
-		boneOffsets[name] = offset;
+		if (boneOffsets.size() < MAX_BONES)
+		{
+			assert(bones.contains(name));
+			boneOffsets[name] = offset;
+		}
 	}
 
 	bool Bone::isValidBone(const std::string &name)

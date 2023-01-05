@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <glm/glm.hpp>
 
+#include "Bone.h"
+
 namespace Animation
 {
 	class Uniform
@@ -11,12 +13,11 @@ namespace Animation
 	protected:
 		static constexpr std::uint32_t UNIFORM_BINDING = 0;
 		static constexpr std::uint32_t SAMPLER_BINDING = 1;
-		static constexpr std::uint32_t MAX_BONES = 100;
 
 	public:
 		struct UniformData
 		{
-			alignas(16) glm::mat4 boneTransforms[MAX_BONES];
+			alignas(16) glm::mat4 boneTransforms[Bone::MAX_BONES];
 			alignas(16) glm::mat4 modelMatrix;
 			alignas(16) glm::mat4 viewMatrix;
 			alignas(16) glm::mat4 projectionMatrix;
