@@ -17,7 +17,7 @@ namespace Animation
 	public:
 		Mesh(MeshData meshData, std::shared_ptr<Material> material);
 
-		void render() const;
+		void render(Uniform::UniformData uniformData) const;
 	};
 }
 

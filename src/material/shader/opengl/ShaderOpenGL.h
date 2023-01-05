@@ -25,8 +25,6 @@ namespace Animation
 
 		void setTexture(const std::unique_ptr<Texture> &texture) override;
 
-		[[nodiscard]] glm::mat4 getProjectionMatrix() const override;
-
 	private:
 		void attachShaders() const;
 

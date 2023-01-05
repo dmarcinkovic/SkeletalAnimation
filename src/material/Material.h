@@ -28,15 +28,9 @@ namespace Animation
 
 		void start() const;
 
-		void update() const;
+		void update(Uniform::UniformData uniformData) const;
 
 		void end() const;
-
-		[[nodiscard]] float getShininess() const;
-
-		[[nodiscard]] float getSpecularStrength() const;
-
-		[[nodiscard]] const glm::vec3 &getDiffuseColor() const;
 
 	private:
 		std::unique_ptr<Texture> getDiffuseTexture(const std::filesystem::path &scenePath,

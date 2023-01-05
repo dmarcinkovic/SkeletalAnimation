@@ -1,4 +1,5 @@
 #include <spdlog/spdlog.h>
+#include <glm/ext/matrix_clip_space.hpp>
 
 #include "RendererVulkan.h"
 #include "VulkanInstance.h"
@@ -229,5 +230,19 @@ namespace Animation
 	std::unique_ptr<Texture> RendererVulkan::getTexture(const std::uint8_t *pixels, int width, int height) const
 	{
 		return std::make_unique<TextureVulkan>(width, height, pixels);
+	}
+
+	glm::mat4 RendererVulkan::getProjectionMatrix(float fov, float near, float far) const
+	{
+		VkExtent2D extent = m_SwapChain.getExtent();
+
+		assert(extent.width > 0);
+		assert(extent.height > 0);
+
+		const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
+		projectionMatrix[1][1] *= -1;
+
+		return projectionMatrix;
 	}
 }

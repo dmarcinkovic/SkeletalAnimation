@@ -1,6 +1,5 @@
 #include <spdlog/spdlog.h>
 #include <cassert>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "ShaderVulkan.h"
 #include "VertexShader.spv.h"
@@ -284,7 +283,7 @@ namespace Animation
 
 	std::vector<VkVertexInputBindingDescription> ShaderVulkan::getBindingDescription()
 	{
-		constexpr int numberOfBindingDescriptions = 3;
+		constexpr int numberOfBindingDescriptions = 5;
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(numberOfBindingDescriptions);
 
 		bindingDescriptions[0].binding = 0;
@@ -299,12 +298,20 @@ namespace Animation
 		bindingDescriptions[2].stride = 3 * sizeof(float);
 		bindingDescriptions[2].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
+		bindingDescriptions[3].binding = 3;
+		bindingDescriptions[3].stride = 4 * sizeof(float);
+		bindingDescriptions[3].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		bindingDescriptions[4].binding = 4;
+		bindingDescriptions[4].stride = 4 * sizeof(int);
+		bindingDescriptions[4].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
 		return bindingDescriptions;
 	}
 
 	std::vector<VkVertexInputAttributeDescription> ShaderVulkan::getAttributeDescription()
 	{
-		constexpr int numberOfAttributeDescriptions = 3;
+		constexpr int numberOfAttributeDescriptions = 5;
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(numberOfAttributeDescriptions);
 
 		attributeDescriptions[0].binding = 0;
@@ -321,6 +328,16 @@ namespace Animation
 		attributeDescriptions[2].location = 2;
 		attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[2].offset = 0;
+
+		attributeDescriptions[3].binding = 3;
+		attributeDescriptions[3].location = 3;
+		attributeDescriptions[3].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+		attributeDescriptions[3].offset = 0;
+
+		attributeDescriptions[4].binding = 4;
+		attributeDescriptions[4].location = 4;
+		attributeDescriptions[4].format = VK_FORMAT_R32G32B32A32_SINT;
+		attributeDescriptions[4].offset = 0;
 
 		return attributeDescriptions;
 	}
@@ -430,21 +447,6 @@ namespace Animation
 		textureVulkan->createTexture(uniform);
 
 		m_Uniform = std::move(uniform);
-	}
-
-	glm::mat4 ShaderVulkan::getProjectionMatrix() const
-	{
-		RendererVulkan *renderer = getRenderer();
-		VkExtent2D extent = renderer->getSwapChain().getExtent();
-
-		assert(extent.width > 0);
-		assert(extent.height > 0);
-
-		const float aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(FOV), aspect, NEAR, FAR);
-		projectionMatrix[1][1] *= -1;
-
-		return projectionMatrix;
 	}
 
 	TextureVulkan *ShaderVulkan::getTexture(const std::unique_ptr<Texture> &texture)

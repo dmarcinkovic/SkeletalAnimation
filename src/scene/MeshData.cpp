@@ -4,6 +4,7 @@
 
 #include "MeshData.h"
 #include "Renderer.h"
+#include "Bone.h"
 
 namespace
 {
@@ -68,7 +69,7 @@ namespace Animation
 	{
 		const std::unique_ptr<Renderer> &renderer = Renderer::getRenderer();
 
-		parseIndices(mesh, renderer);
+		parseIndices(mesh);
 		parseVertices(mesh, renderer);
 		parseTextureCoordinates(mesh, renderer);
 		parseNormals(mesh, renderer);
@@ -152,7 +153,7 @@ namespace Animation
 		}
 	}
 
-	void MeshData::parseIndices(const aiMesh *mesh, const std::unique_ptr<Renderer> &renderer)
+	void MeshData::parseIndices(const aiMesh *mesh)
 	{
 		assert(mesh->HasFaces());
 
@@ -174,6 +175,9 @@ namespace Animation
 
 	void MeshData::parseBones(const aiMesh *mesh, const std::unique_ptr<Renderer> &renderer)
 	{
+		std::vector<float> weights;
+		std::vector<int> ids;
+
 		if (mesh->HasBones())
 		{
 			std::vector<std::vector<float>> boneWeights(mesh->mNumVertices);
@@ -184,20 +188,28 @@ namespace Animation
 				const aiBone *bone = mesh->mBones[i];
 				assert(bone);
 
-				parseBone(bone, i, boneWeights, boneIds);
+				const std::string boneName = bone->mName.C_Str();
+				Bone::mapBone(boneName);
+				Bone::setBoneOffset(boneName, bone->mOffsetMatrix);
+				int boneId = Bone::getBoneIndex(boneName);
+
+				parseBone(bone, boneId, boneWeights, boneIds);
 			}
 
-			std::vector<float> weights = flattenBoneWeights(std::move(boneWeights));
-
-			std::unique_ptr<VertexBufferObject> boneWeightsData = renderer->createVertexBufferObject();
-			boneWeightsData->storeFloatData(3, weights, NUMBER_OF_BONES_PER_VERTEX);
-			m_VertexArrayObject->storeFloatData(3, std::move(boneWeightsData));
-
-			std::vector<int> ids = flattenBoneIndices(std::move(boneIds));
-
-			std::unique_ptr<VertexBufferObject> boneIdsData = renderer->createVertexBufferObject();
-			boneIdsData->storeIntData(4, ids, NUMBER_OF_BONES_PER_VERTEX);
-			m_VertexArrayObject->storeIntData(4, std::move(boneIdsData));
+			weights = flattenBoneWeights(std::move(boneWeights));
+			ids = flattenBoneIndices(std::move(boneIds));
+		} else
+		{
+			weights.resize(mesh->mNumVertices * NUMBER_OF_BONES_PER_VERTEX);
+			ids.resize(mesh->mNumVertices * NUMBER_OF_BONES_PER_VERTEX, -1);
 		}
+
+		std::unique_ptr<VertexBufferObject> boneWeightsData = renderer->createVertexBufferObject();
+		boneWeightsData->storeFloatData(3, weights, NUMBER_OF_BONES_PER_VERTEX);
+		m_VertexArrayObject->storeFloatData(3, std::move(boneWeightsData));
+
+		std::unique_ptr<VertexBufferObject> boneIdsData = renderer->createVertexBufferObject();
+		boneIdsData->storeIntData(4, ids, NUMBER_OF_BONES_PER_VERTEX);
+		m_VertexArrayObject->storeIntData(4, std::move(boneIdsData));
 	}
 }

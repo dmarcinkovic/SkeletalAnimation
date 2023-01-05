@@ -8,11 +8,11 @@ namespace Animation
 	{
 	}
 
-	void Mesh::render() const
+	void Mesh::render(Uniform::UniformData uniformData) const
 	{
 		m_Material->start();
 
-		m_Material->update();
+		m_Material->update(uniformData);
 		m_MeshData.bindMesh();
 
 		Renderer::getRenderer()->draw(m_MeshData.getVertexCount());

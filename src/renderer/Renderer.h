@@ -4,9 +4,10 @@
 #include <memory>
 #include <glm/vec4.hpp>
 
-#include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "VertexArrayObject.h"
+#include "VertexBufferObject.h"
 
 namespace Animation
 {
@@ -14,7 +15,6 @@ namespace Animation
 	{
 	protected:
 		const glm::vec4 m_ClearColor{0.7f, 0.7f, 0.7f, 1.0f};
-		std::vector<Mesh> m_Meshes;
 
 	public:
 		static std::unique_ptr<Renderer> &getRenderer();
@@ -25,11 +25,7 @@ namespace Animation
 
 		virtual void preRender();
 
-		void render() const;
-
 		virtual void postRender();
-
-		void addMesh(Mesh mesh);
 
 		virtual void setViewport(int width, int height) = 0;
 
@@ -48,6 +44,8 @@ namespace Animation
 		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::uint8_t *data, int len) const = 0;
 
 		[[nodiscard]] virtual std::unique_ptr<Texture> getTexture(const std::uint8_t *pixels, int w, int h) const = 0;
+
+		[[nodiscard]] virtual glm::mat4 getProjectionMatrix(float fov, float near, float far) const = 0;
 	};
 }
 

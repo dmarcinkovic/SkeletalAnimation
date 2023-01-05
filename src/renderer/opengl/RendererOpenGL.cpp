@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <spdlog/spdlog.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "RendererOpenGL.h"
 #include "VertexArrayObjectOpenGL.h"
@@ -97,5 +98,11 @@ namespace Animation
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glEnable(GL_FRAMEBUFFER_SRGB);
+	}
+
+	glm::mat4 RendererOpenGL::getProjectionMatrix(float fov, float near, float far) const
+	{
+		const float aspect = getWindowAspectRatio();
+		return glm::perspective(glm::radians(fov), aspect, near, far);
 	}
 }

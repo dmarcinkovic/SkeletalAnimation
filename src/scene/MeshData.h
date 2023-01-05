@@ -36,7 +36,7 @@ namespace Animation
 
 		void parseNormals(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 
-		void parseIndices(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
+		void parseIndices(const aiMesh *mesh);
 
 		void parseBones(const aiMesh *mesh, const std::unique_ptr<class Renderer> &renderer);
 	};

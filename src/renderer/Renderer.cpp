@@ -29,17 +29,4 @@ namespace Animation
 	{
 
 	}
-
-	void Renderer::render() const
-	{
-		for (const Mesh &mesh: m_Meshes)
-		{
-			mesh.render();
-		}
-	}
-
-	void Renderer::addMesh(Mesh mesh)
-	{
-		m_Meshes.emplace_back(std::move(mesh));
-	}
 }

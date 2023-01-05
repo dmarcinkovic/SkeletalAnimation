@@ -36,6 +36,8 @@ namespace Animation
 
 		[[nodiscard]] std::unique_ptr<Texture> getTexture(const std::uint8_t *pixels, int w, int h) const override;
 
+		[[nodiscard]] glm::mat4 getProjectionMatrix(float fov, float near, float far) const override;
+
 		[[nodiscard]] float getWindowAspectRatio() const;
 
 	private:

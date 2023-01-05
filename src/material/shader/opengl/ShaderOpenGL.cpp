@@ -1,6 +1,5 @@
 #include <cassert>
 #include <spdlog/spdlog.h>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "ShaderOpenGL.h"
 #include "UniformOpenGL.h"
@@ -149,14 +148,6 @@ namespace Animation
 		textureOpenGL->createTexture(uniform);
 
 		m_Uniform = std::move(uniform);
-	}
-
-	glm::mat4 ShaderOpenGL::getProjectionMatrix() const
-	{
-		RendererOpenGL *renderer = getRenderer();
-
-		const float aspect = renderer->getWindowAspectRatio();
-		return glm::perspective(glm::radians(FOV), aspect, NEAR, FAR);
 	}
 
 	RendererOpenGL *ShaderOpenGL::getRenderer()

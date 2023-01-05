@@ -40,30 +40,19 @@ namespace Animation
 		m_Shader->startShader();
 	}
 
-	void Material::update() const
+	void Material::update(Uniform::UniformData uniformData) const
 	{
-		m_Shader->update(this);
+		uniformData.diffuseColor = m_DiffuseColor;
+		uniformData.specularStrength = m_SpecularStrength;
+		uniformData.shininess = m_Shininess;
+
+		m_Shader->updateUniforms(uniformData);
 	}
 
 	void Material::end() const
 	{
 		assert(m_Shader);
 		m_Shader->stopShader();
-	}
-
-	float Material::getShininess() const
-	{
-		return m_Shininess;
-	}
-
-	float Material::getSpecularStrength() const
-	{
-		return m_SpecularStrength;
-	}
-
-	const glm::vec3 &Material::getDiffuseColor() const
-	{
-		return m_DiffuseColor;
 	}
 
 	std::unique_ptr<Texture> Material::getDiffuseTexture(const std::filesystem::path &scenePath,
