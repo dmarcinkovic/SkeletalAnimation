@@ -121,11 +121,23 @@ namespace Animation
 
 		vkResetFences(m_Device.getDevice(), 1, &fence);
 
-		vkResetCommandBuffer(m_CommandPool.getCurrentCommandBuffer(), 0);
+		VkCommandBuffer commandBuffer = m_CommandPool.getCurrentCommandBuffer();
+		vkResetCommandBuffer(commandBuffer, 0);
+
+		beginCommandBuffer(commandBuffer);
+		beginRenderPass(commandBuffer);
 	}
 
 	void RendererVulkan::postRender()
 	{
+		VkCommandBuffer commandBuffer = m_CommandPool.getCurrentCommandBuffer();
+		vkCmdEndRenderPass(commandBuffer);
+		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+		{
+			spdlog::error("Failed to record command buffer.");
+			std::exit(EXIT_FAILURE);
+		}
+
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -137,8 +149,7 @@ namespace Animation
 		submitInfo.pWaitDstStageMask = waitStages;
 
 		submitInfo.commandBufferCount = 1;
-		VkCommandBuffer currentCommandBuffer = m_CommandPool.getCurrentCommandBuffer();
-		submitInfo.pCommandBuffers = &currentCommandBuffer;
+		submitInfo.pCommandBuffers = &commandBuffer;
 
 		std::vector<VkSemaphore> signalSemaphores = getSignalSemaphores();
 		submitInfo.signalSemaphoreCount = 1;
@@ -248,5 +259,34 @@ namespace Animation
 		projectionMatrix[1][1] *= -1;
 
 		return projectionMatrix;
+	}
+
+	void RendererVulkan::beginCommandBuffer(VkCommandBuffer commandBuffer)
+	{
+		VkCommandBufferBeginInfo beginCommandBuffer{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+
+		if (vkBeginCommandBuffer(commandBuffer, &beginCommandBuffer) != VK_SUCCESS)
+		{
+			spdlog::error("Failed to begin command buffer.");
+			std::exit(EXIT_FAILURE);
+		}
+	}
+
+	void RendererVulkan::beginRenderPass(VkCommandBuffer commandBuffer)
+	{
+		VkClearValue clearColor = getClearColor();
+		VkClearValue depthStencil = {1.0f, 0};
+		std::array<VkClearValue, 2> clearValues{clearColor, depthStencil};
+		VkRenderPassBeginInfo renderPassInfo{};
+
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_RenderPass.getRenderPass();
+		renderPassInfo.framebuffer = getCurrentFramebuffer().getFramebuffer();
+		renderPassInfo.renderArea.offset = {0, 0};
+		renderPassInfo.renderArea.extent = m_SwapChain.getExtent();
+		renderPassInfo.clearValueCount = clearValues.size();
+		renderPassInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 }

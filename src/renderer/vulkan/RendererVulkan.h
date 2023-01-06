@@ -80,6 +80,10 @@ namespace Animation
 
 		[[nodiscard]] const CommandPool &getCommandPool() const;
 
+		static void beginCommandBuffer(VkCommandBuffer commandBuffer);
+
+		void beginRenderPass(VkCommandBuffer commandBuffer);
+
 	private:
 		RendererVulkan();
 

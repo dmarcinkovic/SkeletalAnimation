@@ -48,10 +48,6 @@ namespace Animation
 
 		static const RenderPass &getRenderPass();
 
-		static void beginCommandBuffer(VkCommandBuffer commandBuffer);
-
-		static void beginRenderPass(const class RendererVulkan *renderer, VkCommandBuffer commandBuffer);
-
 		static void setViewport(VkCommandBuffer commandBuffer, VkExtent2D extent);
 
 		static void setScissor(VkCommandBuffer commandBuffer, VkExtent2D extent);

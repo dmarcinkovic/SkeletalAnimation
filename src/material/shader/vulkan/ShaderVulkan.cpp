@@ -146,8 +146,6 @@ namespace Animation
 		RendererVulkan *renderer = getRenderer();
 		VkCommandBuffer commandBuffer = renderer->getCurrentCommandBuffer();
 
-		beginCommandBuffer(commandBuffer);
-		beginRenderPass(renderer, commandBuffer);
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 		setViewport(commandBuffer, renderer->getSwapChain().getExtent());
 		setScissor(commandBuffer, renderer->getSwapChain().getExtent());
@@ -160,16 +158,6 @@ namespace Animation
 	void ShaderVulkan::stopShader() const
 	{
 		m_Uniform->unbind();
-
-		RendererVulkan *renderer = getRenderer();
-		VkCommandBuffer commandBuffer = renderer->getCurrentCommandBuffer();
-
-		vkCmdEndRenderPass(commandBuffer);
-		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-		{
-			spdlog::error("Failed to record command buffer.");
-			std::exit(EXIT_FAILURE);
-		}
 	}
 
 	void ShaderVulkan::createShader(const LogicalDevice &device)
@@ -356,35 +344,6 @@ namespace Animation
 	const RenderPass &ShaderVulkan::getRenderPass()
 	{
 		return getRenderer()->getRenderPass();
-	}
-
-	void ShaderVulkan::beginCommandBuffer(VkCommandBuffer commandBuffer)
-	{
-		VkCommandBufferBeginInfo beginCommandBuffer{.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-
-		if (vkBeginCommandBuffer(commandBuffer, &beginCommandBuffer) != VK_SUCCESS)
-		{
-			spdlog::error("Failed to begin command buffer.");
-			std::exit(EXIT_FAILURE);
-		}
-	}
-
-	void ShaderVulkan::beginRenderPass(const RendererVulkan *renderer, VkCommandBuffer commandBuffer)
-	{
-		VkClearValue clearColor = renderer->getClearColor();
-		VkClearValue depthStencil = {1.0f, 0};
-		std::array<VkClearValue, 2> clearValues{clearColor, depthStencil};
-		VkRenderPassBeginInfo renderPassInfo{};
-
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderer->getRenderPass().getRenderPass();
-		renderPassInfo.framebuffer = renderer->getCurrentFramebuffer().getFramebuffer();
-		renderPassInfo.renderArea.offset = {0, 0};
-		renderPassInfo.renderArea.extent = renderer->getSwapChain().getExtent();
-		renderPassInfo.clearValueCount = clearValues.size();
-		renderPassInfo.pClearValues = clearValues.data();
-
-		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
 	void ShaderVulkan::setViewport(VkCommandBuffer commandBuffer, VkExtent2D extent)
