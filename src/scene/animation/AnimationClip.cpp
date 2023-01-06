@@ -104,7 +104,7 @@ namespace Animation
 			return parentTransform * nodeTransformation;
 		}
 
-		return glm::mat4{1.0f};
+		return parentTransform;
 	}
 
 	void AnimationClip::updateAnimationTime(float deltaTimeInSeconds)
