@@ -50,11 +50,6 @@ namespace Animation
 		vkDestroyDevice(m_LogicalDevice, nullptr);
 	}
 
-	VkInstance LogicalDevice::getVulkanInstance() const
-	{
-		return m_Instance.getInstance();
-	}
-
 	VkSurfaceKHR LogicalDevice::getSurface() const
 	{
 		return m_RenderSurface.getSurface();

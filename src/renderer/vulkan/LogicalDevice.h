@@ -29,8 +29,6 @@ namespace Animation
 
 		LogicalDevice(const LogicalDevice &) = delete;
 
-		[[nodiscard]] VkInstance getVulkanInstance() const;
-
 		[[nodiscard]] VkSurfaceKHR getSurface() const;
 
 		[[nodiscard]] VkPhysicalDevice getPhysicalDevice() const;
