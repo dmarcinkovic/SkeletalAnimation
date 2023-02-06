@@ -64,6 +64,7 @@ set(SkeletalAnimationHeaders
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/timer/Timer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.h"
 )
 
@@ -114,6 +115,7 @@ set(SkeletalAnimationSources
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/opengl/VertexBufferObjectOpenGL.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VertexBufferObjectVulkan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/buffer/vulkan/VulkanBuffer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/timer/Timer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window/Window.cpp"
 )
 
@@ -135,6 +137,7 @@ set(SkeletalAnimationIncludes
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/opengl"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/vulkan"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/timer"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/window"
 )
 

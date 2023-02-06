@@ -8,6 +8,7 @@
 
 #include "Scene.h"
 #include "Renderer.h"
+#include "Timer.h"
 
 namespace
 {
@@ -27,6 +28,8 @@ namespace Animation
 
 	Scene Scene::createScene(const std::filesystem::path &sceneFile)
 	{
+		Timer timer;
+
 		assert(std::filesystem::exists(sceneFile));
 		Scene scene(sceneFile);
 
