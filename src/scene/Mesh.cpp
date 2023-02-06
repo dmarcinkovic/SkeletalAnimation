@@ -12,6 +12,7 @@ namespace Animation
 	{
 		m_Material->start();
 
+		uniformData.modelMatrix *= m_WorldTransform;
 		m_Material->update(uniformData);
 		m_MeshData.bindMesh();
 
@@ -19,5 +20,10 @@ namespace Animation
 
 		m_MeshData.unbindMesh();
 		m_Material->end();
+	}
+
+	void Mesh::setWorldTransform(const glm::mat4 &worldTransform)
+	{
+		m_WorldTransform = worldTransform;
 	}
 }

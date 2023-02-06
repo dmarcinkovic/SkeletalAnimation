@@ -1,11 +1,21 @@
 #include <utility>
+#include <stack>
 #include <assimp/postprocess.h>
 #include <spdlog/spdlog.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Scene.h"
 #include "Renderer.h"
+
+namespace
+{
+	glm::mat4 toMat4(const aiMatrix4x4 &matrix)
+	{
+		return glm::transpose(glm::make_mat4(&matrix.a1));
+	}
+}
 
 namespace Animation
 {
@@ -63,6 +73,34 @@ namespace Animation
 			const std::shared_ptr<Material> &material = materials[mesh->mMaterialIndex];
 
 			m_Meshes.emplace_back(std::move(meshData), material);
+		}
+
+		applyMeshTransforms();
+	}
+
+	void Scene::applyMeshTransforms()
+	{
+		std::stack<std::pair<const aiNode *, glm::mat4>> stack;
+		stack.emplace(m_Scene->mRootNode, toMat4(m_Scene->mRootNode->mTransformation));
+
+		while (!stack.empty())
+		{
+			const auto [node, transform] = stack.top();
+			stack.pop();
+			assert(node);
+
+			for (int i = 0; i < node->mNumChildren; ++i)
+			{
+				stack.emplace(node->mChildren[i], transform * toMat4(node->mChildren[i]->mTransformation));
+			}
+
+			for (int i = 0; i < node->mNumMeshes; ++i)
+			{
+				unsigned int index = node->mMeshes[i];
+				assert(index < m_Meshes.size());
+
+				m_Meshes[index].setWorldTransform(transform);
+			}
 		}
 	}
 

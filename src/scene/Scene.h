@@ -42,13 +42,15 @@ namespace Animation
 
 		void parseMeshes(const std::vector<std::shared_ptr<class Material>> &materials);
 
+		void applyMeshTransforms();
+
 		[[nodiscard]] std::vector<std::shared_ptr<class Material>> parseMaterials() const;
 
 		void parseCameras();
 
 		void parseLights();
 
-		Uniform::UniformData getUniformData() const;
+		[[nodiscard]] Uniform::UniformData getUniformData() const;
 	};
 }
 
