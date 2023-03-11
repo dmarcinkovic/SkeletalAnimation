@@ -17,6 +17,7 @@ namespace Animation
 	{
 		static constexpr int TEXTURE_UNIT = 0;
 
+		glBindBufferRange(GL_UNIFORM_BUFFER, UNIFORM_BINDING, m_UniformId, 0, sizeof(UniformData));
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(UniformData), &uniformData);
 
 		glUniform1i(m_TextureLocation, TEXTURE_UNIT);
@@ -49,7 +50,7 @@ namespace Animation
 	void UniformOpenGL::allocateBuffer(GLuint programId) const
 	{
 		bind();
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformData), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformData), nullptr, GL_DYNAMIC_DRAW);
 
 		GLuint uniformIndex = glGetUniformBlockIndex(programId, "UniformBufferObject");
 		assert(uniformIndex != GL_INVALID_INDEX);
