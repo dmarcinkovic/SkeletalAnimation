@@ -3,8 +3,12 @@ project(SkeletalAnimation)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+find_package(glfw3 REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(assimp REQUIRED)
+find_package(stb REQUIRED)
+find_package(Vulkan REQUIRED)
+find_package(GLEW REQUIRED)
 
 set(SkeletalAnimationResources
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/FragmentShader.glsl.h"
@@ -149,4 +153,4 @@ add_executable(SkeletalAnimation
 )
 
 target_include_directories(SkeletalAnimation PRIVATE ${SkeletalAnimationIncludes})
-target_link_libraries(SkeletalAnimation PRIVATE ${CONAN_LIBS})
+target_link_libraries(SkeletalAnimation PRIVATE glfw spdlog::spdlog assimp::assimp stb::stb Vulkan::Vulkan GLEW::GLEW)
